@@ -74,9 +74,10 @@
   .headlines a:active{opacity:.6;}
   .headlines .dot{flex:none;width:9px;height:9px;border-radius:50%;position:relative;top:-1px;}
   .headlines .hl-area{flex:none;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 7px;}
-  .hl-cat{display:flex;align-items:center;gap:9px;margin:16px 0 2px;}
-  .hl-cat:first-child{margin-top:0;}
-  .hl-cat-name{font-weight:800;color:var(--green-deep);font-size:15.5px;}
+  .cat-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+  .cat-tab{border:1.5px solid var(--green);background:#fff;color:var(--green-deep);
+    border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;cursor:pointer;}
+  .cat-tab.active{background:var(--green);color:#fff;}
   .modal-bg{position:fixed;inset:0;background:rgba(50,60,45,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;}
   .modal-bg[hidden]{display:none;}
   .modal{background:var(--card);width:100%;max-width:680px;max-height:86vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:26px 22px 30px;position:relative;animation:modalUp .25s ease;}
@@ -157,11 +158,12 @@
   <header>
     <img class="keeper" id="keeperImg" src="keeper.webp" alt="森の番人">
     <h1>森のほっとニュース</h1>
+    <div class="cat-tabs" id="catTabs"></div>
   </header>
 
   <div class="headlines">
     <div class="hl-head"><h2>今日の見出し</h2><span class="date-inline" id="dateLabel"></span></div>
-    <div id="headlineGroups"></div>
+    <ul id="headlineList"></ul>
   </div>
 
   <div class="my-hotto"><span class="pill">あなたのほっと <span class="h">♥</span> <span class="n" id="myHottoNum">0</span> 回</span></div>
@@ -344,19 +346,34 @@
     }).catch(function(){});
   });
 
-  var groups = document.getElementById('headlineGroups');
+  var hlList = document.getElementById('headlineList');
+  var tabsBox = document.getElementById('catTabs');
+  var activeCat = -1;
+  function applyFilter(){
+    var lis = hlList.children;
+    for (var k = 0; k < lis.length; k++) {
+      var c = parseInt(lis[k].getAttribute('data-cat'), 10);
+      lis[k].style.display = (activeCat < 0 || c === activeCat) ? '' : 'none';
+    }
+    var tabs = tabsBox.children;
+    for (var m = 0; m < tabs.length; m++) {
+      tabs[m].classList.toggle('active', m === activeCat);
+    }
+  }
   D.categories.forEach(function(cat, ci){
-    var gh = document.createElement('div');
-    gh.className = 'hl-cat';
-    var cn = document.createElement('span');
-    cn.className = 'hl-cat-name';
-    cn.textContent = cat.name;
-    gh.appendChild(cn);
-    groups.appendChild(gh);
-    var ul = document.createElement('ul');
+    var tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'cat-tab';
+    tab.textContent = cat.name.replace(/ニュース$/, '');
+    tab.addEventListener('click', function(){
+      activeCat = (activeCat === ci) ? -1 : ci;
+      applyFilter();
+    });
+    tabsBox.appendChild(tab);
     cat.items.forEach(function(it, ii){
       var id = (D.dateISO || 'day') + '-c' + ci + 'i' + ii;
       var li = document.createElement('li');
+      li.setAttribute('data-cat', ci);
       var a = document.createElement('a');
       a.href = '#';
       var dot = document.createElement('span');
@@ -370,9 +387,8 @@
       a.appendChild(dot); a.appendChild(t); a.appendChild(ar);
       a.addEventListener('click', function(ev){ ev.preventDefault(); openModal(id, it); });
       li.appendChild(a);
-      ul.appendChild(li);
+      hlList.appendChild(li);
     });
-    groups.appendChild(ul);
   });
 
   fetch(SB_URL + '/rest/v1/hotto_likes?select=article_id,cnt', {
