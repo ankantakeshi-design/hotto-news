@@ -76,8 +76,7 @@
   .headlines .hl-title{flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .cat-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
   .cat-tab{border:1.5px solid var(--green);background:#fff;color:var(--green-deep);
-    border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;cursor:pointer;}
-  .cat-tab.active{background:var(--green);color:#fff;}
+    border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;}
   .modal-bg{position:fixed;inset:0;background:rgba(50,60,45,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;}
   .modal-bg[hidden]{display:none;}
   .modal{background:var(--card);width:100%;max-width:680px;max-height:86vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:26px 22px 30px;position:relative;animation:modalUp .25s ease;}
@@ -348,27 +347,10 @@
 
   var hlList = document.getElementById('headlineList');
   var tabsBox = document.getElementById('catTabs');
-  var activeCat = -1;
-  function applyFilter(){
-    var lis = hlList.children;
-    for (var k = 0; k < lis.length; k++) {
-      var c = parseInt(lis[k].getAttribute('data-cat'), 10);
-      lis[k].style.display = (activeCat < 0 || c === activeCat) ? '' : 'none';
-    }
-    var tabs = tabsBox.children;
-    for (var m = 0; m < tabs.length; m++) {
-      tabs[m].classList.toggle('active', m === activeCat);
-    }
-  }
   D.categories.forEach(function(cat, ci){
-    var tab = document.createElement('button');
-    tab.type = 'button';
+    var tab = document.createElement('span');
     tab.className = 'cat-tab';
     tab.textContent = cat.name.replace(/ニュース$/, '');
-    tab.addEventListener('click', function(){
-      activeCat = (activeCat === ci) ? -1 : ci;
-      applyFilter();
-    });
     tabsBox.appendChild(tab);
     cat.items.forEach(function(it, ii){
       var id = (D.dateISO || 'day') + '-c' + ci + 'i' + ii;
