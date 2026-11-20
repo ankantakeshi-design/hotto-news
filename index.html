@@ -162,6 +162,13 @@
   .home-note{margin-top:44px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;}
   .home-note .hn-title{font-weight:800;color:var(--green-deep);font-size:15.5px;margin-bottom:6px;text-align:center;}
   .home-note p{font-size:13.5px;color:var(--sub);line-height:1.9;}
+  .home-note[hidden]{display:none;}
+  .hn-done{display:block;margin:14px auto 2px;min-height:48px;padding:12px 30px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;}
+  .hn-done:active{opacity:.75;}
+  .home-howto-link{text-align:center;margin-top:16px;}
+  .home-howto-link button{background:none;border:none;color:var(--green);font-size:13.5px;font-weight:700;text-decoration:underline;font-family:inherit;cursor:pointer;min-height:48px;padding:12px 18px;}
+  .modal .howto-close-bottom{display:block;width:100%;margin-top:20px;min-height:48px;padding:13px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;}
+  .modal .howto-close-bottom:active{opacity:.75;}
   footer{margin-top:40px;text-align:center;color:var(--sub);font-size:13px;line-height:1.9;}
   footer .brand{font-weight:700;color:var(--ink);}
   footer a{color:var(--green);text-decoration:none;font-weight:700;}
@@ -221,13 +228,16 @@
     <ul id="archiveList"></ul>
   </div>
 
-  <div class="home-note">
+  <div class="home-note" id="homeNote">
     <div class="hn-title">ほっとニュースを、ホーム画面に置けます</div>
     <p>iPhoneの方：Safariで開いて、下の共有ボタン（□に↑のマーク）から「ホーム画面に追加」。<br>
     Androidの方：Chromeで開いて、右上のメニュー（︙）から「ホーム画面に追加」。<br>
     パソコンの方：Chromeの右上のメニュー（︙）から「保存と共有」→「ショートカットを作成」で、デスクトップに置けます。ブックマーク（お気に入り）に入れておいても大丈夫です。<br>
     番人のアイコンから、毎朝のニュースにすぐ来られますよ。</p>
+    <button class="hn-done" id="homeDoneBtn" type="button">ホーム画面に置けました</button>
   </div>
+  <script>try{ if (localStorage.getItem('hotto-homescreen-done') === '1') document.getElementById('homeNote').hidden = true; }catch(e){}</script>
+  <div class="home-howto-link"><button id="homeHowtoOpen" type="button">ホーム画面への置き方を見る</button></div>
 
   <a class="mori-link" href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer" style="margin-top:26px">
     <img src="take-icon.png" alt="たけちゃんリンク" style="width:40px;height:40px;border-radius:10px;flex:none">
@@ -262,6 +272,18 @@
     <p class="m-body" id="mBody"></p>
     <div class="m-more"><a id="mLink" target="_blank" rel="noopener noreferrer">元の記事を読む →</a> <span class="src" id="mSrc"></span></div>
     <div class="m-like-wrap"><button class="like" id="mLike" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="howtoBg" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="howtoTitle">
+    <button class="modal-close" id="howtoClose" type="button" aria-label="閉じる">×</button>
+    <h3 id="howtoTitle">ほっとニュースを、ホーム画面に置けます</h3>
+    <p class="m-body">iPhoneの方：Safariで開いて、下の共有ボタン（□に↑のマーク）から「ホーム画面に追加」。<br>
+    Androidの方：Chromeで開いて、右上のメニュー（︙）から「ホーム画面に追加」。<br>
+    パソコンの方：Chromeの右上のメニュー（︙）から「保存と共有」→「ショートカットを作成」で、デスクトップに置けます。ブックマーク（お気に入り）に入れておいても大丈夫です。<br>
+    番人のアイコンから、毎朝のニュースにすぐ来られますよ。</p>
+    <button class="howto-close-bottom" id="howtoCloseBottom" type="button">閉じる</button>
   </div>
 </div>
 
@@ -526,6 +548,47 @@
       ta.remove();
     }
   });
+})();
+</script>
+<script>
+(function(){
+  var KEY = 'hotto-homescreen-done';
+  var note = document.getElementById('homeNote');
+  var doneBtn = document.getElementById('homeDoneBtn');
+  function isDone(){ try { return localStorage.getItem(KEY) === '1'; } catch(e){ return false; } }
+  if (note && isDone()) note.hidden = true;
+  if (doneBtn) doneBtn.addEventListener('click', function(){
+    try { localStorage.setItem(KEY, '1'); } catch(e){}
+    if (note) note.hidden = true;
+  });
+
+  var bg = document.getElementById('howtoBg');
+  var openBtn = document.getElementById('homeHowtoOpen');
+  if (!bg || !openBtn) return;
+  var pushed = false;
+  function openHowto(){
+    bg.hidden = false;
+    document.body.style.overflow = 'hidden';
+    try { history.pushState({hottoHowto:true}, ''); pushed = true; } catch(e){}
+  }
+  function closeHowto(fromPop){
+    if (bg.hidden) { pushed = false; return; }
+    bg.hidden = true;
+    var art = document.getElementById('modalBg');
+    document.body.style.overflow = (art && !art.hidden) ? 'hidden' : '';
+    if (pushed && !fromPop) {
+      pushed = false;
+      try { history.back(); } catch(e){}
+    } else {
+      pushed = false;
+    }
+  }
+  openBtn.addEventListener('click', openHowto);
+  document.getElementById('howtoClose').addEventListener('click', function(){ closeHowto(false); });
+  document.getElementById('howtoCloseBottom').addEventListener('click', function(){ closeHowto(false); });
+  bg.addEventListener('click', function(ev){ if (ev.target === bg) closeHowto(false); });
+  document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && !bg.hidden) closeHowto(false); });
+  window.addEventListener('popstate', function(){ if (!bg.hidden) closeHowto(true); });
 })();
 </script>
 </body>
