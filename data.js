@@ -2,17 +2,19 @@
 // 3本立て：心が温まる／希望が持てる／くすっと笑える（各1〜3件）
 // 毎朝、ミューが新しい記事に差し替え、前日分は archive へ移す
 window.NEWS_DATA = {
-  dateISO: "2026-11-20",
-  dateLabel: "2026年11月20日（金）",
-  updatedAt: "0:11",
+  dateISO: "2026-11-21",
+  dateLabel: "2026年11月21日（土）",
+  updatedAt: "7:44",
   omake: {
-    quote: { text: "世界がぜんたい幸福にならないうちは、個人の幸福はあり得ない。", person: "宮沢賢治" },
+    quote: { text: "自分の庭を耕そう。", person: "ヴォルテール（『カンディード』より）" },
     birthdays: [
-      { name: "エドウィン・ハッブル", years: "1889年生まれ", note: "宇宙が広がり続けていることを見つけた天文学者です。" },
-      { name: "ロバート・F・ケネディ", years: "1925年生まれ", note: "アメリカの政治家。「なぜそうなのか」でなく「なぜできないのか」と問い続けました。" }
+      { name: "ヴォルテール", years: "1694年生まれ", note: "フランスの哲学者・作家。『カンディード』の作者です。" },
+      { name: "ルネ・マグリット", years: "1898年生まれ", note: "ベルギーの画家。シュルレアリスムを代表する画家です。" },
+      { name: "ビョーク", years: "1965年生まれ", note: "アイスランドの歌手。独特の歌声で世界中にファンがいます。" }
     ],
     whatDay: [
-      { title: "世界子どもの日", note: "国連が定めた、世界の子どもたちのための日です。" }
+      { title: "世界テレビ・デー", note: "国連が定めた日。1996年の第1回世界テレビ・フォーラムにちなみます。" },
+      { title: "世界ハロー・デー", note: "11月21日に10人にあいさつをして、対話と平和の大切さを示す日です。" }
     ]
   },
   categories: [
@@ -22,17 +24,17 @@ window.NEWS_DATA = {
       items: [
         {
           area: "日本",
-          title: "二度寝中の黒猫に、毛布とぬいぐるみ",
-          body: "朝ごはんのあと、ソファで二度寝していた黒猫のティチャラくん。5歳の娘さんが、そっと毛布を掛けて、頭をなでて、お気に入りのクマのぬいぐるみまで隣に添えてあげました。9万回以上見られた、やさしい朝のひとコマです。",
-          source: "エキサイトニュース",
-          url: "http://www.excite.co.jp/news/article/nekochan_cat50786/"
+          title: "ニッコリお昼寝、ホッキョクグマのマルル",
+          body: "釧路市動物園で暮らすメスのホッキョクグマ、マルル。トレーニングをがんばったあと、ブドウを食べて、お気に入りの砂場のくぼみでお昼寝です。動物園の公式Xが「ニコニコしているようにも見えますが、いい夢でも見ているのでしょうか」と紹介すると、幸せそうな寝顔が話題になりました。",
+          source: "産経新聞 emogram",
+          url: "https://emogram.sankei.com/121593"
         },
         {
-          area: "日本",
-          title: "憧れの選手と、泣き笑いの握手",
-          body: "来日中の大リーガー、ポール・スキーンズ投手が日本のファンと交流しました。憧れの選手を前に涙ぐむファンと握手を交わし、子どもたちの手作りプレゼントには「アリガトウ」。国を越えた、温かい時間になりました。",
-          source: "THE DIGEST",
-          url: "https://topics.smt.docomo.ne.jp/article/thedigestweb/sports/thedigestweb-122986"
+          area: "世界",
+          title: "「ありがとう」のチキンを、働く人たちへ",
+          body: "シンガポールの小学生8人が、自分たちのお小遣いから159シンガポールドル分のチキンを買い、地下鉄の工事現場で働く人たちに届けました。「シンガポールをつくってくれてありがとう」と握手で感謝を伝えると、作業員も笑顔に。動画は1万5千件以上のいいねを集めました。",
+          source: "Malay Mail",
+          url: "https://www.malaymail.com/amp/news/singapore/2026/11/19/thank-you-for-building-singapore-primary-school-boys-treat-construction-workers-to-s159-worth-of-food/243881"
         }
       ]
     },
@@ -41,18 +43,18 @@ window.NEWS_DATA = {
       icon: "🌱",
       items: [
         {
-          area: "世界",
-          title: "心臓手術を乗り越えた1歳の帰国を、ダンスでお祝い",
-          body: "生まれつき心臓に病気があったウガンダの1歳の女の子が、インドで大きな手術を受けて元気に回復しました。帰国すると、ダンスグループ「Ghetto Kids」の子どもたちが、横断幕とダンスで大歓迎。命と優しさが、国を越えてつながりました。",
-          source: "The Tribune",
-          url: "https://www.tribuneindia.com/news/business/ghetto-kids-celebrate-ugandan-toddlers-successful-heart-surgery-in-keralam/"
+          area: "日本",
+          title: "液体のまま明るく光る、新しい蛍光液体",
+          body: "岐阜大学などの研究グループが、液体のまま蛍光量子収率80％という高い効率で光る蛍光性イオン液体を開発しました。400℃を超えても分解せず、強い紫外線や酸・塩基にも耐える丈夫さで、曲がる光デバイスや宇宙機器への応用が期待されています。成果は11月10日、科学誌Advanced Materialsに発表されました。",
+          source: "サンスポ",
+          url: "https://www.sanspo.com/pressrelease/kyodo_prwire/BG7NXXZG5RPOLJVZDU7NOEMMCE/"
         },
         {
           area: "世界",
-          title: "引退しても、育った公園で1,500家族に感謝祭",
-          body: "NBAのスター選手ラッセル・ウェストブルックが、引退から3か月。自分が育ったロサンゼルスの公園で、1,500家族に感謝祭の食事と冬のコートを配りました。雨の中、本人が荷物を運ぶ姿も。この活動は、もう14年続いています。",
-          source: "Times of India",
-          url: "https://timesofindia.indiatimes.com/sports/nba/top-stories/3-months-after-retirement-9-time-nba-all-star-makes-heartwarming-thanksgiving-gesture-through-his-why-not-foundation/articleshow/136011407.cms"
+          title: "シロナガスクジラ、418頭から4,018頭へ",
+          body: "捕鯨で99.8％も減った南極のシロナガスクジラが、50年の保護ののち、418頭から推定4,018頭まで回復したという研究が11月5日に発表されました。今も年4.5％ずつ増えています。ただ、捕鯨前の数のまだ1.9％ほどで、絶滅危惧種のまま。見守りを続けることが大切だと、研究者は話しています。",
+          source: "Good News Network",
+          url: "https://www.goodnewsnetwork.org/this-blue-whale-population-grew-1000-since-the-end-of-whaling/"
         }
       ]
     },
@@ -62,20 +64,25 @@ window.NEWS_DATA = {
       items: [
         {
           area: "日本",
-          title: "動物病院に、挨拶だけして帰るコーギー",
-          body: "診察室に名前を呼ばれると、おしりをフリフリ、大喜びで入っていくコーギーのこまちちゃん。先生たちに完璧な挨拶をしたあと、診察の前に「それでは」と帰ろうとする、コントのような展開が話題です。",
-          source: "わんちゃんホンポ",
-          url: "https://home.kingsoft.jp/news/amusing/wanchan/61193.html"
-        },
-        {
-          area: "日本",
-          title: "「事故チュー」して、固まってしまった猫たち",
-          body: "毛づくろいをしていた2匹の猫が、うっかり口と口が当たって「事故チュー」。驚いて、そのままフリーズしてしまった気まずい表情が「笑える」と話題になり、動画は116万回以上再生されました。",
-          source: "ねこちゃんホンポ",
-          url: "https://home.kingsoft.jp/news/amusing/nekochan/37875.html"
+          title: "「この子、もううちの子だよ」に嬉し涙",
+          body: "子犬の見学だけだと思っていた子どもたちに、飼い主さんが「この子もううちの子なんだよ、一緒に帰るよ」と伝えると、男の子は満面の笑み、女の子は手で顔を覆って号泣。スタッフさんまでもらい泣きした、幸せいっぱいのサプライズでした。",
+          source: "NEWSjp",
+          url: "https://news.jp/i/1496300413125526029"
         }
       ]
     }
   ],
-  archive: []
+  archive: [
+    {
+      dateLabel: "2026年11月20日（金）",
+      titles: [
+        "二度寝中の黒猫に、毛布とぬいぐるみ",
+        "憧れの選手と、泣き笑いの握手",
+        "心臓手術を乗り越えた1歳の帰国を、ダンスでお祝い",
+        "引退しても、育った公園で1,500家族に感謝祭",
+        "動物病院に、挨拶だけして帰るコーギー",
+        "「事故チュー」して、固まってしまった猫たち"
+      ]
+    }
+  ]
 };
