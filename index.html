@@ -75,6 +75,8 @@
   section{margin-top:38px;}
   .cat-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
   .cat-head .icon{font-size:24px;}
+  .cat-head .cat-keeper{width:46px;height:46px;border-radius:50%;object-fit:cover;
+    border:2px solid #fff;box-shadow:0 2px 8px rgba(70,100,60,.16);background:#fff;display:block;}
   .cat-head h2{font-size:21px;font-weight:800;color:var(--green-deep);}
   .cat-head .rule{flex:1;height:1px;background:var(--line);}
   article{
@@ -235,7 +237,16 @@
     var head = document.createElement('div');
     head.className = 'cat-head';
     head.innerHTML = '<span class="icon"></span><h2></h2><span class="rule"></span>';
-    head.querySelector('.icon').textContent = cat.icon;
+    var iconSpan = head.querySelector('.icon');
+    var jnow = new Date();
+    var jjst = new Date(jnow.getTime() + (9 * 60 + jnow.getTimezoneOffset()) * 60000);
+    var jday = Math.floor(Date.UTC(jjst.getFullYear(), jjst.getMonth(), jjst.getDate()) / 86400000);
+    var kimg2 = document.createElement('img');
+    kimg2.className = 'cat-keeper';
+    kimg2.alt = '森の番人';
+    kimg2.src = 'keeper-' + (((jday + ci) % 7) + 1) + '.webp';
+    kimg2.onerror = function(){ iconSpan.textContent = cat.icon; };
+    iconSpan.appendChild(kimg2);
     head.querySelector('h2').textContent = cat.name;
     sec.appendChild(head);
     cat.items.forEach(function(it, ii){
