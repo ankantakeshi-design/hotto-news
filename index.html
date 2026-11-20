@@ -187,7 +187,7 @@
       <p class="om-person" id="omQuotePerson"></p>
     </div>
     <div class="om-block" id="omBirthdays" hidden>
-      <div class="om-label">今日が誕生日の偉人</div>
+      <div class="om-label" id="omBirthdayLabel">今日が誕生日の偉人</div>
       <ul class="om-list" id="omBirthdayList"></ul>
     </div>
     <div class="om-block" id="omWhatDay" hidden>
@@ -431,6 +431,8 @@
       document.getElementById('omQuote').hidden = false; shown = true;
     }
     if (om.birthdays && om.birthdays.length){
+      var dp = (D.dateISO || '').split('-');
+      if (dp.length === 3) document.getElementById('omBirthdayLabel').textContent = '今日が誕生日の偉人（' + Number(dp[1]) + '月' + Number(dp[2]) + '日）';
       var bl = document.getElementById('omBirthdayList');
       om.birthdays.forEach(function(p){
         var li = document.createElement('li');
