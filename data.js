@@ -4,6 +4,7 @@
 window.NEWS_DATA = {
   dateISO: "2026-11-20",
   dateLabel: "2026年11月20日（金）",
+  updatedAt: "0:11",
   categories: [
     {
       name: "心が温まるニュース",
