@@ -61,6 +61,17 @@
     padding:6px 18px;font-size:14px;color:#8a5a68;font-weight:700;}
   .my-hotto .pill .h{color:#e56b8c;}
   .my-hotto .pill .n{display:inline-block;font-size:16px;color:#d14e78;min-width:1.2em;}
+  .headlines{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px 10px;margin-top:22px;}
+  .headlines h2{font-size:16.5px;font-weight:800;color:var(--green-deep);margin-bottom:8px;}
+  .headlines ul{list-style:none;}
+  .headlines li{border-bottom:1px dashed var(--line);}
+  .headlines li:last-child{border-bottom:none;}
+  .headlines a{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink);
+    font-size:14.5px;font-weight:700;line-height:1.55;padding:9px 2px;}
+  .headlines a:active{opacity:.6;}
+  .headlines .dot{flex:none;width:9px;height:9px;border-radius:50%;position:relative;top:-1px;}
+  .headlines .hl-area{flex:none;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 7px;}
+  article{scroll-margin-top:14px;}
   .my-hotto .pill .n.pop{animation:cntPop .45s ease;}
   @keyframes cntPop{0%{transform:scale(1);}40%{transform:scale(1.45);}100%{transform:scale(1);}}
   .mori-link{
@@ -134,6 +145,11 @@
   </header>
 
   <div class="my-hotto"><span class="pill">あなたのほっと <span class="h">♥</span> <span class="n" id="myHottoNum">0</span> 回</span></div>
+
+  <div class="headlines">
+    <h2>今日の見出し</h2>
+    <ul id="headlineList"></ul>
+  </div>
 
   <a class="mori-link" href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">
     <span style="font-size:26px">🌲</span>
@@ -229,6 +245,29 @@
     b.querySelector('.heart').textContent = '♥';
   }
 
+  var hlList = document.getElementById('headlineList');
+  var catColors = ['#e8837a', '#5e9c63', '#e8a13a'];
+  if (hlList) {
+    D.categories.forEach(function(cat, ci){
+      cat.items.forEach(function(it, ii){
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '#art-c' + ci + 'i' + ii;
+        var dot = document.createElement('span');
+        dot.className = 'dot';
+        dot.style.background = catColors[ci % catColors.length];
+        var t = document.createElement('span');
+        t.textContent = it.title;
+        var ar = document.createElement('span');
+        ar.className = 'hl-area';
+        ar.textContent = it.area;
+        a.appendChild(dot); a.appendChild(t); a.appendChild(ar);
+        li.appendChild(a);
+        hlList.appendChild(li);
+      });
+    });
+  }
+
   D.categories.forEach(function(cat, ci){
     var sec = document.createElement('section');
     var head = document.createElement('div');
@@ -249,6 +288,7 @@
     cat.items.forEach(function(it, ii){
       var id = (D.dateISO || 'day') + '-c' + ci + 'i' + ii;
       var a = document.createElement('article');
+      a.id = 'art-c' + ci + 'i' + ii;
       var area = document.createElement('span');
       area.className = 'area' + (it.area === '日本' ? ' jp' : '');
       area.textContent = it.area;
