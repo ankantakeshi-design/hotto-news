@@ -71,7 +71,20 @@
   .headlines a:active{opacity:.6;}
   .headlines .dot{flex:none;width:9px;height:9px;border-radius:50%;position:relative;top:-1px;}
   .headlines .hl-area{flex:none;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 7px;}
-  article{scroll-margin-top:14px;}
+  .hl-cat{display:flex;align-items:center;gap:9px;margin:16px 0 2px;}
+  .hl-cat:first-child{margin-top:0;}
+  .hl-cat-name{font-weight:800;color:var(--green-deep);font-size:15.5px;}
+  .modal-bg{position:fixed;inset:0;background:rgba(50,60,45,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center;}
+  .modal-bg[hidden]{display:none;}
+  .modal{background:var(--card);width:100%;max-width:680px;max-height:86vh;overflow-y:auto;border-radius:22px 22px 0 0;padding:26px 22px 30px;position:relative;animation:modalUp .25s ease;}
+  @keyframes modalUp{from{transform:translateY(26px);opacity:.4;}to{transform:translateY(0);opacity:1;}}
+  .modal h3{font-size:20px;font-weight:800;line-height:1.55;margin:8px 0 10px;padding-right:36px;}
+  .modal .m-body{font-size:15.5px;color:#5d493f;line-height:1.9;}
+  .modal-close{position:absolute;top:12px;right:14px;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:19px;color:var(--sub);cursor:pointer;line-height:1;}
+  .m-more{margin-top:16px;font-size:14px;}
+  .m-more a{color:var(--accent2);font-weight:700;text-decoration:none;}
+  .m-like-wrap{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);text-align:center;}
+  .m-like-wrap .like{margin-left:0;font-size:15px;padding:11px 22px;}
   .my-hotto .pill .n.pop{animation:cntPop .45s ease;}
   @keyframes cntPop{0%{transform:scale(1);}40%{transform:scale(1.45);}100%{transform:scale(1);}}
   .mori-link{
@@ -148,7 +161,7 @@
 
   <div class="headlines">
     <h2>今日の見出し</h2>
-    <ul id="headlineList"></ul>
+    <div id="headlineGroups"></div>
   </div>
 
   <a class="mori-link" href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">
@@ -159,8 +172,6 @@
     </span>
     <span class="arrow">→</span>
   </a>
-
-  <main id="newsMain"></main>
 
   <div class="archive" id="archiveBox" style="display:none">
     <h2>これまでのニュース</h2>
@@ -180,6 +191,17 @@
     <p>このサイトは「<a href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">集まれ水女子の森</a>」とつながる、心体調整塾のコンテンツサイトです。<br>
     ニュースの著作権は各配信元にあります。紹介文は要約です。</p>
   </footer>
+</div>
+
+<div class="modal-bg" id="modalBg" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" type="button" aria-label="閉じる">×</button>
+    <span class="area" id="mArea"></span>
+    <h3 id="mTitle"></h3>
+    <p class="m-body" id="mBody"></p>
+    <div class="m-more"><a id="mLink" target="_blank" rel="noopener noreferrer">元の記事を読む →</a> <span class="src" id="mSrc"></span></div>
+    <div class="m-like-wrap"><button class="like" id="mLike" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
+  </div>
 </div>
 
 <script src="data.js"></script>
@@ -219,7 +241,6 @@
   var SB_URL = 'https://twxxcjjffznjaeyconoc.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3eHhjampmZnpuamFleWNvbm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMTc1NTcsImV4cCI6MjExMDU5MzU1N30.MIVvDvZx03ai7mshyP3FR8JP0xe9Yu-7BgUjtIvvpew';
   document.getElementById('dateLabel').textContent = D.dateLabel + 'のニュース';
-  var main = document.getElementById('newsMain');
   var liked = [];
   try { liked = JSON.parse(localStorage.getItem('hotto-liked') || '[]'); } catch(e) {}
   var myCount = 0;
@@ -233,135 +254,135 @@
   }
   renderMyCount(false);
   var counts = {};
-  var buttons = {};
-
-  function renderCount(id){
-    var b = buttons[id]; if (!b) return;
-    b.querySelector('.cnt').textContent = counts[id] || 0;
-  }
-  function markLiked(id){
-    var b = buttons[id]; if (!b) return;
-    b.classList.add('liked');
-    b.querySelector('.heart').textContent = '♥';
-  }
-
-  var hlList = document.getElementById('headlineList');
   var catColors = ['#e8837a', '#5e9c63', '#e8a13a'];
-  if (hlList) {
-    D.categories.forEach(function(cat, ci){
-      cat.items.forEach(function(it, ii){
-        var li = document.createElement('li');
-        var a = document.createElement('a');
-        a.href = '#art-c' + ci + 'i' + ii;
-        var dot = document.createElement('span');
-        dot.className = 'dot';
-        dot.style.background = catColors[ci % catColors.length];
-        var t = document.createElement('span');
-        t.textContent = it.title;
-        var ar = document.createElement('span');
-        ar.className = 'hl-area';
-        ar.textContent = it.area;
-        a.appendChild(dot); a.appendChild(t); a.appendChild(ar);
-        li.appendChild(a);
-        hlList.appendChild(li);
-      });
-    });
-  }
+  var jnow = new Date();
+  var jjst = new Date(jnow.getTime() + (9 * 60 + jnow.getTimezoneOffset()) * 60000);
+  var jday = Math.floor(Date.UTC(jjst.getFullYear(), jjst.getMonth(), jjst.getDate()) / 86400000);
 
+  var modalBg = document.getElementById('modalBg');
+  var mArea = document.getElementById('mArea');
+  var mTitle = document.getElementById('mTitle');
+  var mBody = document.getElementById('mBody');
+  var mLink = document.getElementById('mLink');
+  var mSrc = document.getElementById('mSrc');
+  var mLike = document.getElementById('mLike');
+  var curId = null;
+
+  function paintLike(){
+    if (!curId) return;
+    var on = liked.indexOf(curId) >= 0;
+    mLike.classList.toggle('liked', on);
+    mLike.querySelector('.heart').textContent = on ? '♥' : '♡';
+    mLike.querySelector('.cnt').textContent = counts[curId] || 0;
+  }
+  function openModal(id, it){
+    curId = id;
+    mArea.className = 'area' + (it.area === '日本' ? ' jp' : '');
+    mArea.textContent = it.area;
+    mTitle.textContent = it.title;
+    mBody.textContent = it.body;
+    mLink.href = it.url;
+    mSrc.textContent = '（' + it.source + '）';
+    paintLike();
+    modalBg.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    modalBg.hidden = true;
+    document.body.style.overflow = '';
+    curId = null;
+  }
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  modalBg.addEventListener('click', function(ev){ if (ev.target === modalBg) closeModal(); });
+  document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && !modalBg.hidden) closeModal(); });
+
+  mLike.addEventListener('click', function(){
+    if (!curId || liked.indexOf(curId) >= 0) return;
+    var id = curId;
+    var colors = ['#e56b8c', '#ef8fae', '#e8837a', '#f2a0b5'];
+    for (var hi = 0; hi < 6; hi++) {
+      var hs = document.createElement('span');
+      hs.className = 'heart-pop';
+      hs.textContent = '♥';
+      hs.style.left = (18 + Math.random() * 60) + '%';
+      hs.style.fontSize = (11 + Math.random() * 8) + 'px';
+      hs.style.color = colors[hi % colors.length];
+      hs.style.setProperty('--dx', (Math.random() * 44 - 22) + 'px');
+      hs.style.setProperty('--rot', (Math.random() * 36 - 18) + 'deg');
+      hs.style.animationDelay = (hi * 0.07) + 's';
+      mLike.appendChild(hs);
+      (function(el){ setTimeout(function(){ el.remove(); }, 1700); })(hs);
+    }
+    liked.push(id);
+    try { localStorage.setItem('hotto-liked', JSON.stringify(liked)); } catch(e) {}
+    myCount += 1;
+    try { localStorage.setItem('hotto-my-count', String(myCount)); } catch(e) {}
+    renderMyCount(true);
+    counts[id] = (counts[id] || 0) + 1;
+    paintLike();
+    fetch(SB_URL + '/rest/v1/rpc/increment_hotto_like', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_article_id: id })
+    }).then(function(r){ return r.json(); }).then(function(n){
+      if (typeof n === 'number') { counts[id] = n; if (curId === id) paintLike(); }
+    }).catch(function(){});
+  });
+
+  var groups = document.getElementById('headlineGroups');
   D.categories.forEach(function(cat, ci){
-    var sec = document.createElement('section');
-    var head = document.createElement('div');
-    head.className = 'cat-head';
-    head.innerHTML = '<span class="icon"></span><h2></h2><span class="rule"></span>';
-    var iconSpan = head.querySelector('.icon');
-    var jnow = new Date();
-    var jjst = new Date(jnow.getTime() + (9 * 60 + jnow.getTimezoneOffset()) * 60000);
-    var jday = Math.floor(Date.UTC(jjst.getFullYear(), jjst.getMonth(), jjst.getDate()) / 86400000);
-    var kimg2 = document.createElement('img');
-    kimg2.className = 'cat-keeper';
-    kimg2.alt = '森の番人';
-    kimg2.src = 'keeper-' + (((jday + ci) % 7) + 1) + '.webp';
-    kimg2.onerror = function(){ iconSpan.textContent = cat.icon; };
-    iconSpan.appendChild(kimg2);
-    head.querySelector('h2').textContent = cat.name;
-    sec.appendChild(head);
+    var gh = document.createElement('div');
+    gh.className = 'hl-cat';
+    var kim = document.createElement('img');
+    kim.className = 'cat-keeper';
+    kim.alt = '森の番人';
+    kim.src = 'keeper-' + (((jday + ci) % 7) + 1) + '.webp';
+    kim.onerror = function(){ kim.style.display = 'none'; };
+    var cn = document.createElement('span');
+    cn.className = 'hl-cat-name';
+    cn.textContent = cat.name;
+    gh.appendChild(kim); gh.appendChild(cn);
+    groups.appendChild(gh);
+    var ul = document.createElement('ul');
     cat.items.forEach(function(it, ii){
       var id = (D.dateISO || 'day') + '-c' + ci + 'i' + ii;
-      var a = document.createElement('article');
-      a.id = 'art-c' + ci + 'i' + ii;
-      var area = document.createElement('span');
-      area.className = 'area' + (it.area === '日本' ? ' jp' : '');
-      area.textContent = it.area;
-      var h = document.createElement('h3'); h.textContent = it.title;
-      var p = document.createElement('p'); p.textContent = it.body;
-      var foot = document.createElement('div'); foot.className = 'card-foot';
-      var more = document.createElement('span'); more.className = 'more';
-      var link = document.createElement('a');
-      link.href = it.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
-      link.textContent = '元の記事を読む →';
-      var src = document.createElement('span'); src.className = 'src';
-      src.textContent = '（' + it.source + '）';
-      more.appendChild(link); more.appendChild(src);
-      var btn = document.createElement('button');
-      btn.className = 'like'; btn.type = 'button';
-      btn.innerHTML = '<span class="heart">♡</span>ほっとした<span class="cnt">0</span>';
-      buttons[id] = btn;
-      if (liked.indexOf(id) >= 0) markLiked(id);
-      btn.addEventListener('click', function(){
-        if (liked.indexOf(id) >= 0) return;
-        var colors = ['#e56b8c', '#ef8fae', '#e8837a', '#f2a0b5'];
-        for (var hi = 0; hi < 6; hi++) {
-          var hs = document.createElement('span');
-          hs.className = 'heart-pop';
-          hs.textContent = '♥';
-          hs.style.left = (18 + Math.random() * 60) + '%';
-          hs.style.fontSize = (11 + Math.random() * 8) + 'px';
-          hs.style.color = colors[hi % colors.length];
-          hs.style.setProperty('--dx', (Math.random() * 44 - 22) + 'px');
-          hs.style.setProperty('--rot', (Math.random() * 36 - 18) + 'deg');
-          hs.style.animationDelay = (hi * 0.07) + 's';
-          btn.appendChild(hs);
-          (function(el){ setTimeout(function(){ el.remove(); }, 1700); })(hs);
-        }
-        liked.push(id);
-        try { localStorage.setItem('hotto-liked', JSON.stringify(liked)); } catch(e) {}
-        myCount += 1;
-        try { localStorage.setItem('hotto-my-count', String(myCount)); } catch(e) {}
-        renderMyCount(true);
-        markLiked(id);
-        counts[id] = (counts[id] || 0) + 1; renderCount(id);
-        fetch(SB_URL + '/rest/v1/rpc/increment_hotto_like', {
-          method: 'POST',
-          headers: {
-            'apikey': SB_KEY,
-            'Authorization': 'Bearer ' + SB_KEY,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ p_article_id: id })
-        }).then(function(r){ return r.json(); }).then(function(n){
-          if (typeof n === 'number') { counts[id] = n; renderCount(id); }
-        }).catch(function(){});
-      });
-      foot.appendChild(more); foot.appendChild(btn);
-      a.appendChild(area); a.appendChild(h); a.appendChild(p); a.appendChild(foot);
-      sec.appendChild(a);
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '#';
+      var dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.style.background = catColors[ci % catColors.length];
+      var t = document.createElement('span');
+      t.textContent = it.title;
+      var ar = document.createElement('span');
+      ar.className = 'hl-area';
+      ar.textContent = it.area;
+      a.appendChild(dot); a.appendChild(t); a.appendChild(ar);
+      a.addEventListener('click', function(ev){ ev.preventDefault(); openModal(id, it); });
+      li.appendChild(a);
+      ul.appendChild(li);
     });
-    main.appendChild(sec);
+    groups.appendChild(ul);
   });
 
   fetch(SB_URL + '/rest/v1/hotto_likes?select=article_id,cnt', {
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
   }).then(function(r){ return r.json(); }).then(function(rows){
-    (rows || []).forEach(function(row){ counts[row.article_id] = row.cnt; renderCount(row.article_id); });
+    (rows || []).forEach(function(row){ counts[row.article_id] = row.cnt; });
+    paintLike();
   }).catch(function(){});
 
   if (D.archive && D.archive.length){
     var box = document.getElementById('archiveBox');
-    var ul = document.getElementById('archiveList');
+    var ul2 = document.getElementById('archiveList');
     D.archive.forEach(function(day){
       var li = document.createElement('li');
       li.textContent = day.dateLabel + '：' + day.titles.join('／');
-      ul.appendChild(li);
+      ul2.appendChild(li);
     });
     box.style.display = 'block';
   }
