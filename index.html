@@ -351,6 +351,8 @@
     var tab = document.createElement('span');
     tab.className = 'cat-tab';
     tab.textContent = cat.name.replace(/ニュース$/, '');
+    tab.style.color = catColors[ci % catColors.length];
+    tab.style.borderColor = catColors[ci % catColors.length];
     tabsBox.appendChild(tab);
     cat.items.forEach(function(it, ii){
       var id = (D.dateISO || 'day') + '-c' + ci + 'i' + ii;
