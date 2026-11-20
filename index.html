@@ -96,6 +96,14 @@
   .like.liked{background:#dcefd4;border-color:var(--leaf);cursor:default;}
   .like.liked .heart{color:#e56b8c;}
   .like .cnt{font-weight:700;color:var(--green-deep);}
+  .like{position:relative;}
+  .heart-pop{position:absolute;bottom:72%;pointer-events:none;line-height:1;
+    animation:heartFloat 1.2s ease-out forwards;}
+  @keyframes heartFloat{
+    0%{transform:translate(0,0) scale(.6) rotate(0deg);opacity:0;}
+    18%{opacity:1;}
+    100%{transform:translate(var(--dx,0px),-58px) scale(1.2) rotate(var(--rot,0deg));opacity:0;}
+  }
   .archive{margin-top:44px;}
   .archive h2{font-size:17px;margin-bottom:10px;color:var(--green-deep);}
   .archive li{list-style:none;font-size:14px;color:var(--sub);padding:6px 0;border-bottom:1px dashed var(--line);}
@@ -233,6 +241,20 @@
       if (liked.indexOf(id) >= 0) markLiked(id);
       btn.addEventListener('click', function(){
         if (liked.indexOf(id) >= 0) return;
+        var colors = ['#e56b8c', '#ef8fae', '#e8837a', '#f2a0b5'];
+        for (var hi = 0; hi < 6; hi++) {
+          var hs = document.createElement('span');
+          hs.className = 'heart-pop';
+          hs.textContent = '♥';
+          hs.style.left = (18 + Math.random() * 60) + '%';
+          hs.style.fontSize = (11 + Math.random() * 8) + 'px';
+          hs.style.color = colors[hi % colors.length];
+          hs.style.setProperty('--dx', (Math.random() * 44 - 22) + 'px');
+          hs.style.setProperty('--rot', (Math.random() * 36 - 18) + 'deg');
+          hs.style.animationDelay = (hi * 0.07) + 's';
+          btn.appendChild(hs);
+          (function(el){ setTimeout(function(){ el.remove(); }, 1700); })(hs);
+        }
         liked.push(id);
         try { localStorage.setItem('hotto-liked', JSON.stringify(liked)); } catch(e) {}
         markLiked(id);
