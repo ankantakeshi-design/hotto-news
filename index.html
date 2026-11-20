@@ -337,15 +337,10 @@
   D.categories.forEach(function(cat, ci){
     var gh = document.createElement('div');
     gh.className = 'hl-cat';
-    var kim = document.createElement('img');
-    kim.className = 'cat-keeper';
-    kim.alt = '森の番人';
-    kim.src = 'keeper-' + (((jday + ci) % 7) + 1) + '.webp';
-    kim.onerror = function(){ kim.style.display = 'none'; };
     var cn = document.createElement('span');
     cn.className = 'hl-cat-name';
     cn.textContent = cat.name;
-    gh.appendChild(kim); gh.appendChild(cn);
+    gh.appendChild(cn);
     groups.appendChild(gh);
     var ul = document.createElement('ul');
     cat.items.forEach(function(it, ii){
