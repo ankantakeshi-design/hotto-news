@@ -29,7 +29,18 @@
     color:var(--ink); background:var(--bg);
     line-height:1.8; -webkit-text-size-adjust:100%;
   }
-  .wrap{max-width:680px;margin:0 auto;padding:0 18px 48px;}
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px 48px;position:relative;z-index:1;}
+  .leaf-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+  .fall-leaf{position:absolute;top:-4vh;border-radius:0 60% 0 60%;opacity:.45;
+    animation-name:leafFall;animation-timing-function:linear;animation-iteration-count:infinite;}
+  @keyframes leafFall{
+    0%{transform:translate3d(0,-4vh,0) rotate(0deg);}
+    25%{transform:translate3d(2.2vw,26vh,0) rotate(95deg);}
+    50%{transform:translate3d(-1.6vw,52vh,0) rotate(185deg);}
+    75%{transform:translate3d(2vw,78vh,0) rotate(275deg);}
+    100%{transform:translate3d(-1vw,106vh,0) rotate(360deg);}
+  }
+  @media (prefers-reduced-motion: reduce){ .fall-leaf{display:none;} }
   header{text-align:center;padding:38px 0 8px;}
   .keeper{width:118px;height:118px;object-fit:cover;border-radius:50%;
     border:3px solid #fff;box-shadow:0 4px 14px rgba(70,100,60,.18);background:#fff;}
@@ -91,6 +102,7 @@
 </style>
 </head>
 <body>
+<div class="leaf-bg" id="leafBg" aria-hidden="true"></div>
 <div class="wrap">
   <header>
     <img class="keeper" src="keeper.png" alt="森の番人">
@@ -133,6 +145,27 @@
 </div>
 
 <script src="data.js"></script>
+<script>
+(function(){
+  var bg = document.getElementById('leafBg');
+  if (bg) {
+    var greens = ['#7fae7a', '#5e9c63', '#95c08a', '#a7c796', '#6aa84f'];
+    for (var i = 0; i < 11; i++) {
+      var s = document.createElement('span');
+      s.className = 'fall-leaf';
+      var size = 9 + Math.random() * 9;
+      s.style.width = size + 'px';
+      s.style.height = size * 0.72 + 'px';
+      s.style.left = (Math.random() * 96) + 'vw';
+      s.style.background = greens[i % greens.length];
+      s.style.animationDuration = (17 + Math.random() * 14) + 's';
+      s.style.animationDelay = (-Math.random() * 30) + 's';
+      s.style.opacity = (0.28 + Math.random() * 0.3).toFixed(2);
+      bg.appendChild(s);
+    }
+  }
+})();
+</script>
 <script>
 (function(){
   var D = window.NEWS_DATA;
