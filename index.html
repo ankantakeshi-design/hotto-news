@@ -71,7 +71,7 @@
   .headlines li:last-child{border-bottom:none;}
   .headlines a{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink);
     font-size:14.5px;font-weight:700;line-height:1.55;padding:13px 2px;}
-  .headlines a:visited{color:#7a6f64;}
+  .headlines a.read{color:#7a6f64;}
   .headlines a:active{opacity:.6;}
   .headlines .dot{flex:none;width:9px;height:9px;border-radius:50%;position:relative;top:-1px;}
   .headlines .hl-area{flex:none;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 7px;}
@@ -312,6 +312,14 @@
   document.getElementById('dateLabel').textContent = D.dateLabel + 'のニュース' + (D.updatedAt ? '（' + D.updatedAt + '更新）' : '');
   var liked = [];
   try { liked = JSON.parse(localStorage.getItem('hotto-liked') || '[]'); } catch(e) {}
+  var readIds = [];
+  try { readIds = JSON.parse(localStorage.getItem('hotto-read') || '[]'); } catch(e) {}
+  function markRead(id){
+    if (readIds.indexOf(id) >= 0) return;
+    readIds.push(id);
+    if (readIds.length > 50) readIds = readIds.slice(readIds.length - 50);
+    try { localStorage.setItem('hotto-read', JSON.stringify(readIds)); } catch(e) {}
+  }
   var myCount = 0;
   try { myCount = parseInt(localStorage.getItem('hotto-my-count') || '0', 10) || 0; } catch(e) {}
   if (myCount < liked.length) myCount = liked.length;
@@ -417,6 +425,7 @@
       li.setAttribute('data-cat', ci);
       var a = document.createElement('a');
       a.href = '#';
+      if (readIds.indexOf(id) >= 0) a.classList.add('read');
       var dot = document.createElement('span');
       dot.className = 'dot';
       dot.style.background = catColors[ci % catColors.length];
@@ -427,7 +436,7 @@
       ar.className = 'hl-area';
       ar.textContent = it.area;
       a.appendChild(dot); a.appendChild(t); a.appendChild(ar);
-      a.addEventListener('click', function(ev){ ev.preventDefault(); openModal(id, it); });
+      a.addEventListener('click', function(ev){ ev.preventDefault(); a.classList.add('read'); markRead(id); openModal(id, it); });
       li.appendChild(a);
       hlList.appendChild(li);
     });
