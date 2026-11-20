@@ -43,7 +43,13 @@
   @media (prefers-reduced-motion: reduce){ .fall-leaf{display:none;} }
   header{text-align:center;padding:38px 0 8px;}
   .keeper{width:118px;height:118px;object-fit:cover;border-radius:50%;
-    border:3px solid #fff;box-shadow:0 4px 14px rgba(70,100,60,.18);background:#fff;}
+    border:3px solid #fff;box-shadow:0 4px 14px rgba(70,100,60,.18);background:#fff;
+    animation:keeperSway 6s ease-in-out infinite;}
+  @keyframes keeperSway{
+    0%,100%{transform:translateY(0) rotate(-1.2deg);}
+    50%{transform:translateY(-5px) rotate(1.2deg);}
+  }
+  @media (prefers-reduced-motion: reduce){ .keeper{animation:none;} }
   .site-name{font-size:14px;letter-spacing:.3em;color:var(--green);font-weight:700;margin-top:10px;}
   h1{font-size:32px;font-weight:800;margin:4px 0 2px;color:var(--green-deep);}
   .tagline{color:var(--sub);font-size:15px;}
@@ -105,7 +111,7 @@
 <div class="leaf-bg" id="leafBg" aria-hidden="true"></div>
 <div class="wrap">
   <header>
-    <img class="keeper" src="keeper.webp" alt="森の番人">
+    <img class="keeper" id="keeperImg" src="keeper.webp" alt="森の番人">
     <h1>森のほっとニュース</h1>
     <p class="tagline">毎日の生活に、ご機嫌を。心が温まる話、希望が持てる話、くすっと笑える話を、少しずつ。</p>
     <div><span class="date" id="dateLabel"></span></div>
@@ -146,6 +152,15 @@
 <script src="data.js"></script>
 <script>
 (function(){
+  var kimg = document.getElementById('keeperImg');
+  if (kimg) {
+    var now = new Date();
+    var jst = new Date(now.getTime() + (9 * 60 + now.getTimezoneOffset()) * 60000);
+    var slot = jst.getHours() < 11 ? 0 : (jst.getHours() < 17 ? 1 : 2);
+    var dayNum = Math.floor(Date.UTC(jst.getFullYear(), jst.getMonth(), jst.getDate()) / 86400000);
+    var idx = ((dayNum + slot) % 7) + 1;
+    kimg.src = 'keeper-' + idx + '.webp';
+  }
   var bg = document.getElementById('leafBg');
   if (bg) {
     var greens = ['#7fae7a', '#5e9c63', '#95c08a', '#a7c796', '#6aa84f'];
