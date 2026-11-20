@@ -56,6 +56,13 @@
   .date{margin-top:14px;display:inline-block;background:#fff;border:1px solid var(--line);
     border-radius:999px;padding:4px 18px;font-size:14px;color:var(--sub);}
   .intro{text-align:center;color:var(--sub);font-size:14.5px;margin:20px 6px 6px;}
+  .my-hotto{text-align:center;margin-top:14px;}
+  .my-hotto .pill{display:inline-block;background:#fff;border:1px solid #f0d3dd;border-radius:999px;
+    padding:6px 18px;font-size:14px;color:#8a5a68;font-weight:700;}
+  .my-hotto .pill .h{color:#e56b8c;}
+  .my-hotto .pill .n{display:inline-block;font-size:16px;color:#d14e78;min-width:1.2em;}
+  .my-hotto .pill .n.pop{animation:cntPop .45s ease;}
+  @keyframes cntPop{0%{transform:scale(1);}40%{transform:scale(1.45);}100%{transform:scale(1);}}
   .mori-link{
     display:flex;align-items:center;gap:12px;text-decoration:none;
     background:linear-gradient(120deg,#eef5e6,#e3efdb);
@@ -126,6 +133,8 @@
   </header>
 
   <p class="intro">日本と世界から集めた、ほっとするニュースです。<br>毎朝、森の番人がお届けしています。</p>
+
+  <div class="my-hotto"><span class="pill">あなたのほっと <span class="h">♥</span> <span class="n" id="myHottoNum">0</span> 回</span></div>
 
   <a class="mori-link" href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">
     <span style="font-size:26px">🌲</span>
@@ -198,6 +207,16 @@
   var main = document.getElementById('newsMain');
   var liked = [];
   try { liked = JSON.parse(localStorage.getItem('hotto-liked') || '[]'); } catch(e) {}
+  var myCount = 0;
+  try { myCount = parseInt(localStorage.getItem('hotto-my-count') || '0', 10) || 0; } catch(e) {}
+  if (myCount < liked.length) myCount = liked.length;
+  var myNumEl = document.getElementById('myHottoNum');
+  function renderMyCount(pop){
+    if (!myNumEl) return;
+    myNumEl.textContent = myCount;
+    if (pop) { myNumEl.classList.remove('pop'); void myNumEl.offsetWidth; myNumEl.classList.add('pop'); }
+  }
+  renderMyCount(false);
   var counts = {};
   var buttons = {};
 
@@ -258,6 +277,9 @@
         }
         liked.push(id);
         try { localStorage.setItem('hotto-liked', JSON.stringify(liked)); } catch(e) {}
+        myCount += 1;
+        try { localStorage.setItem('hotto-my-count', String(myCount)); } catch(e) {}
+        renderMyCount(true);
         markLiked(id);
         counts[id] = (counts[id] || 0) + 1; renderCount(id);
         fetch(SB_URL + '/rest/v1/rpc/increment_hotto_like', {
