@@ -3,64 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ほっとニュース｜今日の、いいニュース。</title>
-<meta name="description" content="心が温まるニュース、希望が持てるニュース、くすっと笑えるニュース。日本と世界から、毎朝お届けします。心体調整塾のコンテンツサイトです。">
+<title>森のほっとニュース｜今日の、いいニュース。</title>
+<meta name="description" content="集まれ水女子の森からお届けする、心が温まるニュース、希望が持てるニュース、くすっと笑えるニュース。日本と世界から、毎朝お届けします。">
 <style>
   :root{
-    --ink:#4a342a; --sub:#8a766b; --line:#eee3da;
-    --warm:#fdf6ef; --card:#ffffff;
+    --ink:#43352b; --sub:#7d7268; --line:#e4ddcb;
+    --bg:#f8f6ec; --card:#fffdf6;
+    --green:#4a7c59; --green-deep:#356045; --leaf:#7fae7a;
     --accent:#e8862e; --accent2:#4a90b8;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   body{
     font-family:"Hiragino Maru Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif;
-    color:var(--ink); background:var(--warm);
+    color:var(--ink); background:var(--bg);
     line-height:1.8; -webkit-text-size-adjust:100%;
   }
   .wrap{max-width:680px;margin:0 auto;padding:0 18px 48px;}
-  header{text-align:center;padding:42px 0 8px;}
-  .site-name{font-size:15px;letter-spacing:.35em;color:var(--accent);font-weight:700;}
-  h1{font-size:34px;font-weight:800;margin:6px 0 2px;}
+  header{text-align:center;padding:38px 0 8px;}
+  .keeper{width:118px;height:118px;object-fit:cover;border-radius:50%;
+    border:3px solid #fff;box-shadow:0 4px 14px rgba(70,100,60,.18);background:#fff;}
+  .site-name{font-size:14px;letter-spacing:.3em;color:var(--green);font-weight:700;margin-top:10px;}
+  h1{font-size:32px;font-weight:800;margin:4px 0 2px;color:var(--green-deep);}
   .tagline{color:var(--sub);font-size:15px;}
   .date{margin-top:14px;display:inline-block;background:#fff;border:1px solid var(--line);
     border-radius:999px;padding:4px 18px;font-size:14px;color:var(--sub);}
   .intro{text-align:center;color:var(--sub);font-size:14.5px;margin:20px 6px 6px;}
+  .mori-link{
+    display:flex;align-items:center;gap:12px;text-decoration:none;
+    background:linear-gradient(120deg,#eef5e6,#e3efdb);
+    border:1px solid #cfdfc2;border-radius:16px;padding:14px 18px;margin-top:26px;
+    color:var(--green-deep);
+  }
+  .mori-link .t1{font-weight:800;font-size:16px;}
+  .mori-link .t2{font-size:13px;color:#5c7263;}
+  .mori-link .arrow{margin-left:auto;font-size:20px;color:var(--green);}
   section{margin-top:38px;}
   .cat-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
   .cat-head .icon{font-size:24px;}
-  .cat-head h2{font-size:21px;font-weight:800;}
+  .cat-head h2{font-size:21px;font-weight:800;color:var(--green-deep);}
   .cat-head .rule{flex:1;height:1px;background:var(--line);}
   article{
     background:var(--card);border:1px solid var(--line);border-radius:16px;
     padding:20px 20px 16px;margin-bottom:14px;
-    box-shadow:0 2px 10px rgba(120,80,40,.05);
+    box-shadow:0 2px 10px rgba(90,110,60,.06);
   }
   .area{display:inline-block;font-size:12px;font-weight:700;color:#fff;
     background:var(--accent2);border-radius:999px;padding:1px 10px;margin-bottom:8px;}
   .area.jp{background:var(--accent);}
   article h3{font-size:18.5px;font-weight:800;line-height:1.5;margin-bottom:8px;}
   article p{font-size:15px;color:#5d493f;}
-  .more{margin-top:10px;font-size:13.5px;}
+  .card-foot{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap;}
+  .more{font-size:13.5px;}
   .more a{color:var(--accent2);text-decoration:none;font-weight:700;}
   .more a:hover{text-decoration:underline;}
   .src{color:var(--sub);font-weight:400;}
+  .like{
+    margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+    font-family:inherit;font-size:13.5px;font-weight:700;color:var(--green-deep);
+    background:#eef5e6;border:1px solid #cfdfc2;border-radius:999px;
+    padding:5px 14px;cursor:pointer;transition:all .15s;
+  }
+  .like .heart{font-size:15px;color:#c4cfc0;}
+  .like:hover{background:#e3efdb;}
+  .like.liked{background:#dcefd4;border-color:var(--leaf);cursor:default;}
+  .like.liked .heart{color:#e56b8c;}
+  .like .cnt{font-weight:700;color:var(--green-deep);}
   .archive{margin-top:44px;}
-  .archive h2{font-size:17px;margin-bottom:10px;}
+  .archive h2{font-size:17px;margin-bottom:10px;color:var(--green-deep);}
   .archive li{list-style:none;font-size:14px;color:var(--sub);padding:6px 0;border-bottom:1px dashed var(--line);}
   footer{margin-top:52px;text-align:center;color:var(--sub);font-size:13px;line-height:1.9;}
   footer .brand{font-weight:700;color:var(--ink);}
+  footer a{color:var(--green);text-decoration:none;font-weight:700;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="site-name">ホッ ト ニ ュ ー ス</div>
-    <h1>今日の、いいニュース。</h1>
-    <p class="tagline">心が温まる話、希望が持てる話、くすっと笑える話を、少しずつ。</p>
+    <img class="keeper" src="keeper.png" alt="森の番人">
+    <div class="site-name">モ リ ノ ホ ッ ト ニ ュ ー ス</div>
+    <h1>森のほっとニュース</h1>
+    <p class="tagline">今日の、いいニュース。心が温まる話、希望が持てる話、くすっと笑える話を、少しずつ。</p>
     <div><span class="date" id="dateLabel"></span></div>
   </header>
 
-  <p class="intro">日本と世界から集めた、ほっとするニュースです。<br>毎朝、更新しています。</p>
+  <p class="intro">日本と世界から集めた、ほっとするニュースです。<br>毎朝、森の番人がお届けしています。</p>
+
+  <a class="mori-link" href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">
+    <span style="font-size:26px">🌲</span>
+    <span>
+      <span class="t1">集まれ水女子の森</span><br>
+      <span class="t2">ニュースのあとは、森でひと休みどうぞ。</span>
+    </span>
+    <span class="arrow">→</span>
+  </a>
 
   <main id="newsMain"></main>
 
@@ -71,7 +106,7 @@
 
   <footer>
     <p class="brand">心体調整塾 たけちゃん</p>
-    <p>このサイトは、心体調整塾のコンテンツサイトの一つです。<br>
+    <p>このサイトは「<a href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">集まれ水女子の森</a>」とつながる、心体調整塾のコンテンツサイトです。<br>
     ニュースの著作権は各配信元にあります。紹介文は要約です。</p>
   </footer>
 </div>
@@ -80,9 +115,26 @@
 <script>
 (function(){
   var D = window.NEWS_DATA;
+  var SB_URL = 'https://twxxcjjffznjaeyconoc.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3eHhjampmZnpuamFleWNvbm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMTc1NTcsImV4cCI6MjExMDU5MzU1N30.MIVvDvZx03ai7mshyP3FR8JP0xe9Yu-7BgUjtIvvpew';
   document.getElementById('dateLabel').textContent = D.dateLabel + 'のニュース';
   var main = document.getElementById('newsMain');
-  D.categories.forEach(function(cat){
+  var liked = [];
+  try { liked = JSON.parse(localStorage.getItem('hotto-liked') || '[]'); } catch(e) {}
+  var counts = {};
+  var buttons = {};
+
+  function renderCount(id){
+    var b = buttons[id]; if (!b) return;
+    b.querySelector('.cnt').textContent = counts[id] || 0;
+  }
+  function markLiked(id){
+    var b = buttons[id]; if (!b) return;
+    b.classList.add('liked');
+    b.querySelector('.heart').textContent = '♥';
+  }
+
+  D.categories.forEach(function(cat, ci){
     var sec = document.createElement('section');
     var head = document.createElement('div');
     head.className = 'cat-head';
@@ -90,25 +142,58 @@
     head.querySelector('.icon').textContent = cat.icon;
     head.querySelector('h2').textContent = cat.name;
     sec.appendChild(head);
-    cat.items.forEach(function(it){
+    cat.items.forEach(function(it, ii){
+      var id = (D.dateISO || 'day') + '-c' + ci + 'i' + ii;
       var a = document.createElement('article');
       var area = document.createElement('span');
       area.className = 'area' + (it.area === '日本' ? ' jp' : '');
       area.textContent = it.area;
       var h = document.createElement('h3'); h.textContent = it.title;
       var p = document.createElement('p'); p.textContent = it.body;
-      var more = document.createElement('div'); more.className = 'more';
+      var foot = document.createElement('div'); foot.className = 'card-foot';
+      var more = document.createElement('span'); more.className = 'more';
       var link = document.createElement('a');
       link.href = it.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
       link.textContent = '元の記事を読む →';
       var src = document.createElement('span'); src.className = 'src';
       src.textContent = '（' + it.source + '）';
       more.appendChild(link); more.appendChild(src);
-      a.appendChild(area); a.appendChild(h); a.appendChild(p); a.appendChild(more);
+      var btn = document.createElement('button');
+      btn.className = 'like'; btn.type = 'button';
+      btn.innerHTML = '<span class="heart">♡</span>ほっとした<span class="cnt">0</span>';
+      buttons[id] = btn;
+      if (liked.indexOf(id) >= 0) markLiked(id);
+      btn.addEventListener('click', function(){
+        if (liked.indexOf(id) >= 0) return;
+        liked.push(id);
+        try { localStorage.setItem('hotto-liked', JSON.stringify(liked)); } catch(e) {}
+        markLiked(id);
+        counts[id] = (counts[id] || 0) + 1; renderCount(id);
+        fetch(SB_URL + '/rest/v1/rpc/increment_hotto_like', {
+          method: 'POST',
+          headers: {
+            'apikey': SB_KEY,
+            'Authorization': 'Bearer ' + SB_KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ p_article_id: id })
+        }).then(function(r){ return r.json(); }).then(function(n){
+          if (typeof n === 'number') { counts[id] = n; renderCount(id); }
+        }).catch(function(){});
+      });
+      foot.appendChild(more); foot.appendChild(btn);
+      a.appendChild(area); a.appendChild(h); a.appendChild(p); a.appendChild(foot);
       sec.appendChild(a);
     });
     main.appendChild(sec);
   });
+
+  fetch(SB_URL + '/rest/v1/hotto_likes?select=article_id,cnt', {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  }).then(function(r){ return r.json(); }).then(function(rows){
+    (rows || []).forEach(function(row){ counts[row.article_id] = row.cnt; renderCount(row.article_id); });
+  }).catch(function(){});
+
   if (D.archive && D.archive.length){
     var box = document.getElementById('archiveBox');
     var ul = document.getElementById('archiveList');
