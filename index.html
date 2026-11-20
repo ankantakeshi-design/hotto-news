@@ -7,6 +7,7 @@
 <meta name="description" content="集まれ水女子の森からお届けする、心が温まるニュース、希望が持てるニュース、くすっと笑えるニュース。毎日の生活に、ご機嫌を。日本と世界から、毎朝お届けします。">
 <link rel="icon" href="favicon.ico">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4a7c59">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="森のほっとニュース">
@@ -81,7 +82,10 @@
   .archive{margin-top:44px;}
   .archive h2{font-size:17px;margin-bottom:10px;color:var(--green-deep);}
   .archive li{list-style:none;font-size:14px;color:var(--sub);padding:6px 0;border-bottom:1px dashed var(--line);}
-  footer{margin-top:52px;text-align:center;color:var(--sub);font-size:13px;line-height:1.9;}
+  .home-note{margin-top:44px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;}
+  .home-note .hn-title{font-weight:800;color:var(--green-deep);font-size:15.5px;margin-bottom:6px;text-align:center;}
+  .home-note p{font-size:13.5px;color:var(--sub);line-height:1.9;}
+  footer{margin-top:40px;text-align:center;color:var(--sub);font-size:13px;line-height:1.9;}
   footer .brand{font-weight:700;color:var(--ink);}
   footer a{color:var(--green);text-decoration:none;font-weight:700;}
 </style>
@@ -112,6 +116,13 @@
   <div class="archive" id="archiveBox" style="display:none">
     <h2>これまでのニュース</h2>
     <ul id="archiveList"></ul>
+  </div>
+
+  <div class="home-note">
+    <div class="hn-title">ほっとニュースを、ホーム画面に置けます</div>
+    <p>iPhoneの方：Safariで開いて、下の共有ボタン（□に↑のマーク）から「ホーム画面に追加」。<br>
+    Androidの方：Chromeで開いて、右上のメニュー（︙）から「ホーム画面に追加」。<br>
+    番人のアイコンから、毎朝のニュースにすぐ来られますよ。</p>
   </div>
 
   <footer>
