@@ -99,6 +99,17 @@
   .mori-link .t1{font-weight:800;font-size:16px;}
   .mori-link .t2{font-size:13px;color:#5c7263;}
   .mori-link .arrow{margin-left:auto;font-size:20px;color:var(--green);}
+  .omake{margin-top:30px;background:#fffdf7;border:1px solid #ead9bd;border-radius:16px;padding:16px 18px;}
+  .omake h2{font-size:15px;color:#8a6d3b;margin:0 0 6px;}
+  .om-block{margin-top:10px;}
+  .om-label{font-size:12px;font-weight:800;color:#b08d4f;letter-spacing:.06em;}
+  .om-quote{font-size:15.5px;font-weight:700;line-height:1.8;margin:4px 0 0;color:var(--ink);}
+  .om-person{font-size:12.5px;color:#8a7a5c;margin:2px 0 0;text-align:right;}
+  .om-list{list-style:none;margin:4px 0 0;padding:0;}
+  .om-list li{font-size:13.5px;line-height:1.7;padding:3px 0;}
+  .om-list .om-name{font-weight:800;}
+  .om-list .om-years{font-size:12px;color:#8a7a5c;margin-left:6px;}
+  .om-list .om-note{display:block;font-size:12.5px;color:#6d6353;}
   .mori-link-img{flex-direction:column;align-items:stretch;padding:0;overflow:hidden;gap:0;}
   .mori-link-img .card-img{width:100%;height:170px;object-fit:cover;display:block;}
   .mori-link-img .card-row{display:flex;align-items:center;gap:12px;padding:14px 18px;}
@@ -210,6 +221,23 @@
     </span>
     <span class="arrow">→</span>
   </a>
+
+  <section class="omake" id="omakeBox" hidden>
+    <h2>おまけ</h2>
+    <div class="om-block" id="omQuote" hidden>
+      <div class="om-label">今日の一言</div>
+      <p class="om-quote" id="omQuoteText"></p>
+      <p class="om-person" id="omQuotePerson"></p>
+    </div>
+    <div class="om-block" id="omBirthdays" hidden>
+      <div class="om-label">今日が誕生日の偉人</div>
+      <ul class="om-list" id="omBirthdayList"></ul>
+    </div>
+    <div class="om-block" id="omWhatDay" hidden>
+      <div class="om-label">今日は何の日</div>
+      <ul class="om-list" id="omWhatDayList"></ul>
+    </div>
+  </section>
 
   <footer>
     <p class="brand"><a href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">心体調整塾 たけちゃん</a></p>
@@ -395,6 +423,39 @@
     (rows || []).forEach(function(row){ counts[row.article_id] = row.cnt; });
     paintLike();
   }).catch(function(){});
+
+  if (D.omake){
+    var om = D.omake, shown = false;
+    if (om.quote && om.quote.text){
+      document.getElementById('omQuoteText').textContent = '「' + om.quote.text + '」';
+      document.getElementById('omQuotePerson').textContent = om.quote.person || '';
+      document.getElementById('omQuote').hidden = false; shown = true;
+    }
+    if (om.birthdays && om.birthdays.length){
+      var bl = document.getElementById('omBirthdayList');
+      om.birthdays.forEach(function(p){
+        var li = document.createElement('li');
+        var n = document.createElement('span'); n.className = 'om-name'; n.textContent = p.name;
+        li.appendChild(n);
+        if (p.years){ var y = document.createElement('span'); y.className = 'om-years'; y.textContent = p.years; li.appendChild(y); }
+        if (p.note){ var nt = document.createElement('span'); nt.className = 'om-note'; nt.textContent = p.note; li.appendChild(nt); }
+        bl.appendChild(li);
+      });
+      document.getElementById('omBirthdays').hidden = false; shown = true;
+    }
+    if (om.whatDay && om.whatDay.length){
+      var wl = document.getElementById('omWhatDayList');
+      om.whatDay.forEach(function(w){
+        var li = document.createElement('li');
+        var n = document.createElement('span'); n.className = 'om-name'; n.textContent = w.title;
+        li.appendChild(n);
+        if (w.note){ var nt = document.createElement('span'); nt.className = 'om-note'; nt.textContent = w.note; li.appendChild(nt); }
+        wl.appendChild(li);
+      });
+      document.getElementById('omWhatDay').hidden = false; shown = true;
+    }
+    if (shown) document.getElementById('omakeBox').hidden = false;
+  }
 
   if (D.archive && D.archive.length){
     var box = document.getElementById('archiveBox');
