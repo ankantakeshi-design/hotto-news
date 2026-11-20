@@ -260,7 +260,7 @@
   var D = window.NEWS_DATA;
   var SB_URL = 'https://twxxcjjffznjaeyconoc.supabase.co';
   var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR3eHhjampmZnpuamFleWNvbm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUwMTc1NTcsImV4cCI6MjExMDU5MzU1N30.MIVvDvZx03ai7mshyP3FR8JP0xe9Yu-7BgUjtIvvpew';
-  document.getElementById('dateLabel').textContent = D.dateLabel + 'のニュース';
+  document.getElementById('dateLabel').textContent = D.dateLabel + 'のニュース' + (D.updatedAt ? '（' + D.updatedAt + '更新）' : '');
   var liked = [];
   try { liked = JSON.parse(localStorage.getItem('hotto-liked') || '[]'); } catch(e) {}
   var myCount = 0;
