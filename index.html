@@ -99,7 +99,7 @@
       var p = document.createElement('p'); p.textContent = it.body;
       var more = document.createElement('div'); more.className = 'more';
       var link = document.createElement('a');
-      link.href = it.url; link.target = '_blank'; link.rel = 'noopener';
+      link.href = it.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
       link.textContent = '元の記事を読む →';
       var src = document.createElement('span'); src.className = 'src';
       src.textContent = '（' + it.source + '）';
