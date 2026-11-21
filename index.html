@@ -390,6 +390,7 @@
         </div>
         <p class="yk-past-phrase">締めの一言</p>
       </article>
+      ※「♡ほっとした」ボタンはポップアップ側で話ごとに自動で効く（IDはパネル画像名の yonkoma-YYYYMMDD から自動生成される）。過去分を足すときにボタン側の作業は不要。
       -->
     </div>
   </div>
@@ -504,6 +505,7 @@
       <img src="yonkoma-20261122-w4.webp" width="1200" height="900" alt="四コマ4：温かい飲み物を手にくつろぐ二人。『なんもしない日も、いい夫婦だね』『……あたたかい』" loading="lazy">
     </div>
     <p class="yk-modal-phrase">特別なことは、なにもいらない</p>
+    <div class="m-like-wrap"><button class="like" id="ykLike" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
     <button class="howto-close-bottom" id="ykCloseBottom" type="button">閉じる</button>
   </div>
 </div>
@@ -595,6 +597,58 @@
     mLike.querySelector('.heart').textContent = on ? '♥' : '♡';
     mLike.querySelector('.cnt').textContent = counts[curId] || 0;
   }
+
+  // 「ほっとした」の共通処理（記事ポップアップと四コマポップアップで共有する）
+  var likeListeners = [];
+  function notifyLikes(){
+    for (var li = 0; li < likeListeners.length; li++) { try { likeListeners[li](); } catch(e) {} }
+  }
+  likeListeners.push(paintLike);
+  function spawnHearts(btn){
+    var colors = ['#e56b8c', '#ef8fae', '#e8837a', '#f2a0b5'];
+    for (var hi = 0; hi < 6; hi++) {
+      var hs = document.createElement('span');
+      hs.className = 'heart-pop';
+      hs.textContent = '♥';
+      hs.style.left = (18 + Math.random() * 60) + '%';
+      hs.style.fontSize = (11 + Math.random() * 8) + 'px';
+      hs.style.color = colors[hi % colors.length];
+      hs.style.setProperty('--dx', (Math.random() * 44 - 22) + 'px');
+      hs.style.setProperty('--rot', (Math.random() * 36 - 18) + 'deg');
+      hs.style.animationDelay = (hi * 0.07) + 's';
+      btn.appendChild(hs);
+      (function(el){ setTimeout(function(){ el.remove(); }, 1700); })(hs);
+    }
+  }
+  function doLike(id, btn){
+    if (!id || liked.indexOf(id) >= 0) return false;
+    spawnHearts(btn);
+    liked.push(id);
+    try { localStorage.setItem('hotto-liked', JSON.stringify(liked)); } catch(e) {}
+    myCount += 1;
+    try { localStorage.setItem('hotto-my-count', String(myCount)); } catch(e) {}
+    renderMyCount(true);
+    counts[id] = (counts[id] || 0) + 1;
+    notifyLikes();
+    fetch(SB_URL + '/rest/v1/rpc/increment_hotto_like', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ p_article_id: id })
+    }).then(function(r){ return r.json(); }).then(function(n){
+      if (typeof n === 'number') { counts[id] = n; notifyLikes(); }
+    }).catch(function(){});
+    return true;
+  }
+  window.HottoLikes = {
+    isLiked: function(id){ return liked.indexOf(id) >= 0; },
+    count: function(id){ return counts[id] || 0; },
+    like: function(id, btn){ return doLike(id, btn); },
+    subscribe: function(fn){ likeListeners.push(fn); }
+  };
   function openModal(id, it){
     curId = id;
     mArea.className = 'area' + (it.area === '日本' ? ' jp' : '');
@@ -617,40 +671,8 @@
   document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && !modalBg.hidden) closeModal(); });
 
   mLike.addEventListener('click', function(){
-    if (!curId || liked.indexOf(curId) >= 0) return;
-    var id = curId;
-    var colors = ['#e56b8c', '#ef8fae', '#e8837a', '#f2a0b5'];
-    for (var hi = 0; hi < 6; hi++) {
-      var hs = document.createElement('span');
-      hs.className = 'heart-pop';
-      hs.textContent = '♥';
-      hs.style.left = (18 + Math.random() * 60) + '%';
-      hs.style.fontSize = (11 + Math.random() * 8) + 'px';
-      hs.style.color = colors[hi % colors.length];
-      hs.style.setProperty('--dx', (Math.random() * 44 - 22) + 'px');
-      hs.style.setProperty('--rot', (Math.random() * 36 - 18) + 'deg');
-      hs.style.animationDelay = (hi * 0.07) + 's';
-      mLike.appendChild(hs);
-      (function(el){ setTimeout(function(){ el.remove(); }, 1700); })(hs);
-    }
-    liked.push(id);
-    try { localStorage.setItem('hotto-liked', JSON.stringify(liked)); } catch(e) {}
-    myCount += 1;
-    try { localStorage.setItem('hotto-my-count', String(myCount)); } catch(e) {}
-    renderMyCount(true);
-    counts[id] = (counts[id] || 0) + 1;
-    paintLike();
-    fetch(SB_URL + '/rest/v1/rpc/increment_hotto_like', {
-      method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ p_article_id: id })
-    }).then(function(r){ return r.json(); }).then(function(n){
-      if (typeof n === 'number') { counts[id] = n; if (curId === id) paintLike(); }
-    }).catch(function(){});
+    if (!curId) return;
+    if (window.HottoLikes.like(curId, mLike)) paintLike();
   });
 
   var hlList = document.getElementById('headlineList');
@@ -690,6 +712,7 @@
   }).then(function(r){ return r.json(); }).then(function(rows){
     (rows || []).forEach(function(row){ counts[row.article_id] = row.cnt; });
     paintLike();
+    notifyLikes();
   }).catch(function(){});
 
   if (D.omake){
@@ -836,6 +859,33 @@
   var panels = document.querySelectorAll('#yonkomaBox .yk-panel');
   var modalImgs = modal.querySelectorAll('.yk-modal-stack img');
   var modalPhrase = modal.querySelector('.yk-modal-phrase');
+  // 四コマの「ほっとした」ボタン: IDは掲載日から機械的に決める（記事IDと衝突しない）
+  // 最新話はセクションの data-date（YYYY-MM-DD）から、過去話はパネル画像名（yonkoma-YYYYMMDD-…）から生成する
+  var ykLike = document.getElementById('ykLike');
+  var curYkId = null;
+  function ykIdFromSrc(src){
+    var m = /yonkoma-(\d{8})/.exec(src || '');
+    return m ? 'yonkoma-' + m[1] : null;
+  }
+  var latestYkId = null;
+  if (ykBox) {
+    var dd = (ykBox.getAttribute('data-date') || '').replace(/-/g, '');
+    if (/^\d{8}$/.test(dd)) latestYkId = 'yonkoma-' + dd;
+  }
+  function paintYkLike(){
+    if (!ykLike || !curYkId || !window.HottoLikes) return;
+    var on = window.HottoLikes.isLiked(curYkId);
+    ykLike.classList.toggle('liked', on);
+    ykLike.querySelector('.heart').textContent = on ? '♥' : '♡';
+    ykLike.querySelector('.cnt').textContent = window.HottoLikes.count(curYkId);
+  }
+  if (ykLike) {
+    ykLike.addEventListener('click', function(){
+      if (!curYkId || !window.HottoLikes) return;
+      if (window.HottoLikes.like(curYkId, ykLike)) paintYkLike();
+    });
+    if (window.HottoLikes) window.HottoLikes.subscribe(paintYkLike);
+  }
   function modalSetFrom(imgs){
     var out = [];
     for (var j = 0; j < imgs.length; j++) {
@@ -853,8 +903,10 @@
     if (modalPhrase && phrase != null) modalPhrase.textContent = phrase;
   }
   var pushed = false;
-  function openYk(idx, set, phrase){
+  function openYk(idx, set, phrase, id){
     if (set) setModal(set, phrase);
+    if (id) curYkId = id;
+    paintYkLike();
     bg.hidden = false;
     document.body.style.overflow = 'hidden';
     try { history.pushState({hottoYonkoma:true}, ''); pushed = true; } catch(e){}
@@ -880,9 +932,9 @@
   }
   for (var i = 0; i < panels.length; i++) {
     (function(idx){
-      panels[idx].addEventListener('click', function(){ openYk(idx, currentSet, currentPhrase); });
+      panels[idx].addEventListener('click', function(){ openYk(idx, currentSet, currentPhrase, latestYkId); });
       panels[idx].addEventListener('keydown', function(ev){
-        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openYk(idx, currentSet, currentPhrase); }
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openYk(idx, currentSet, currentPhrase, latestYkId); }
       });
     })(i);
   }
@@ -912,9 +964,10 @@
           var epPanels = ep.querySelectorAll('.yk-panel');
           var phraseEl = ep.querySelector('.yk-past-phrase');
           var epPhrase = phraseEl ? phraseEl.textContent : '';
+          var epId = epPanels.length ? ykIdFromSrc(epPanels[0].getAttribute('data-src') || epPanels[0].getAttribute('src')) : null;
           for (var q = 0; q < epPanels.length; q++) {
             (function(idx){
-              function openPast(){ openYk(idx, modalSetFrom(epPanels), epPhrase); }
+              function openPast(){ openYk(idx, modalSetFrom(epPanels), epPhrase, epId); }
               epPanels[idx].addEventListener('click', openPast);
               epPanels[idx].addEventListener('keydown', function(ev){
                 if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openPast(); }
