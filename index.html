@@ -123,6 +123,16 @@
   .om-list .om-name{font-weight:800;}
   .om-list .om-years{font-size:13px;color:var(--sub);margin-left:6px;}
   .om-list .om-note{display:block;font-size:13.5px;color:var(--sub);}
+  .yonkoma{margin-top:30px;}
+  .yonkoma h2{font-size:16px;font-weight:800;color:var(--green-deep);margin:0 0 2px;}
+  .yk-open{display:block;width:100%;margin-top:14px;padding:0;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 2px 10px rgba(90,110,60,.06);-webkit-tap-highlight-color:transparent;font-family:inherit;}
+  .yk-open:active{opacity:.75;}
+  .yk-img{display:block;width:100%;height:auto;}
+  .yk-note{font-size:13px;color:var(--sub);text-align:center;margin-top:8px;}
+  .yk-ehon{text-align:center;margin-top:2px;}
+  .yk-ehon a{display:inline-block;min-height:48px;padding:12px 18px;font-size:14px;font-weight:700;color:var(--green);text-decoration:none;}
+  .yk-ehon a:active{opacity:.6;}
+  .yk-modal-img{display:block;width:100%;height:auto;border-radius:12px;}
   .mori-link-img{flex-direction:column;align-items:stretch;padding:0;overflow:hidden;gap:0;}
   .mori-link-img .card-img{width:100%;height:170px;object-fit:cover;display:block;}
   .mori-link-img .card-row{display:flex;align-items:center;gap:12px;padding:14px 18px;}
@@ -334,6 +344,15 @@
 </noscript>
 <!-- static-articles:end -->
 
+  <section class="yonkoma" id="yonkomaBox" aria-label="今日の四コマ">
+    <h2>今日の四コマ</h2>
+    <button class="yk-open" id="ykOpen" type="button" aria-label="今日の四コマを大きく見る">
+      <img class="yk-img" src="yonkoma-20261122.webp" width="1080" height="1620" alt="火水四コマ『ひーくんと みーちゃん』。いい夫婦の日に、初雪を見て過ごす二人の四コマ漫画" loading="lazy">
+    </button>
+    <p class="yk-note">タップすると、大きく読めます</p>
+    <p class="yk-ehon"><a href="https://kasuiehon.pages.dev/" target="_blank" rel="noopener noreferrer">絵本『ひーくんと みーちゃん』はこちら →</a></p>
+  </section>
+
   <section class="omake" id="omakeBox" hidden>
     <h2>おまけ</h2>
     <div class="om-card om-card--quote" id="omQuote" hidden>
@@ -431,6 +450,15 @@
     パソコンの方：Chromeの右上のメニュー（︙）から「保存と共有」→「ショートカットを作成」で、デスクトップに置けます。ブックマーク（お気に入り）に入れておいても大丈夫です。<br>
     番人のアイコンから、毎朝のニュースにすぐ来られますよ。</p>
     <button class="howto-close-bottom" id="howtoCloseBottom" type="button">閉じる</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="ykBg" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ykModalTitle">
+    <button class="modal-close" id="ykClose" type="button" aria-label="閉じる">×</button>
+    <h3 id="ykModalTitle" style="font-size:18px">今日の四コマ</h3>
+    <img class="yk-modal-img" src="yonkoma-20261122.webp" width="1080" height="1620" alt="火水四コマ『ひーくんと みーちゃん』。いい夫婦の日に、初雪を見て過ごす二人の四コマ漫画">
+    <button class="howto-close-bottom" id="ykCloseBottom" type="button">閉じる</button>
   </div>
 </div>
 
@@ -736,6 +764,37 @@
   bg.addEventListener('click', function(ev){ if (ev.target === bg) closeHowto(false); });
   document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && !bg.hidden) closeHowto(false); });
   window.addEventListener('popstate', function(){ if (!bg.hidden) closeHowto(true); });
+})();
+</script>
+<script>
+(function(){
+  var bg = document.getElementById('ykBg');
+  var openBtn = document.getElementById('ykOpen');
+  if (!bg || !openBtn) return;
+  var pushed = false;
+  function openYk(){
+    bg.hidden = false;
+    document.body.style.overflow = 'hidden';
+    try { history.pushState({hottoYonkoma:true}, ''); pushed = true; } catch(e){}
+  }
+  function closeYk(fromPop){
+    if (bg.hidden) { pushed = false; return; }
+    bg.hidden = true;
+    var art = document.getElementById('modalBg');
+    document.body.style.overflow = (art && !art.hidden) ? 'hidden' : '';
+    if (pushed && !fromPop) {
+      pushed = false;
+      try { history.back(); } catch(e){}
+    } else {
+      pushed = false;
+    }
+  }
+  openBtn.addEventListener('click', openYk);
+  document.getElementById('ykClose').addEventListener('click', function(){ closeYk(false); });
+  document.getElementById('ykCloseBottom').addEventListener('click', function(){ closeYk(false); });
+  bg.addEventListener('click', function(ev){ if (ev.target === bg) closeYk(false); });
+  document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape' && !bg.hidden) closeYk(false); });
+  window.addEventListener('popstate', function(){ if (!bg.hidden) closeYk(true); });
 })();
 </script>
 <script type="application/ld+json">
