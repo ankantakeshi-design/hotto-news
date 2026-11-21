@@ -153,6 +153,22 @@
   .yk-past-title{font-size:15.5px;font-weight:800;color:var(--ink);margin:0;}
   .yk-past-date{font-size:13px;color:var(--sub);margin:2px 0 0;}
   .yk-past-phrase{font-size:16px;font-weight:800;color:var(--ink);text-align:center;margin:10px 0 0;}
+  .yk-archive-body .yk-past{display:none;}
+  .yk-num-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:10px;}
+  .yk-num-btn{min-height:48px;padding:6px 0;font-size:16.5px;font-weight:800;color:var(--green-deep);background:#fff;border:1.5px solid var(--green);border-radius:12px;cursor:pointer;}
+  .yk-num-btn:active{opacity:.7;}
+  .yk-num-btn.sel{background:var(--green-deep);color:#fff;}
+  .yk-modal-ep{text-align:center;font-size:15.5px;font-weight:800;color:var(--ink);margin:4px 0 0;}
+  .yk-modal-ep[hidden]{display:none;}
+  .yk-modal-date{text-align:center;font-size:12.5px;color:var(--sub);margin:2px 0 10px;}
+  .yk-modal-date[hidden]{display:none;}
+  .yk-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .yk-nav[hidden]{display:none;}
+  .yk-nav-btn{min-height:48px;min-width:104px;padding:10px 14px;font-size:14.5px;font-weight:700;color:var(--green-deep);background:#fff;border:1.5px solid var(--green);border-radius:999px;cursor:pointer;}
+  .yk-nav-btn:active{opacity:.7;}
+  .yk-nav-btn:disabled{opacity:.35;cursor:default;}
+  .yk-nav-no{font-size:14px;font-weight:800;color:var(--green-deep);white-space:nowrap;}
+  .yk-nav-bottom{margin-top:16px;}
   .mori-link-img{flex-direction:column;align-items:stretch;padding:0;overflow:hidden;gap:0;}
   .mori-link-img .card-img{width:100%;height:170px;object-fit:cover;display:block;}
   .mori-link-img .card-row{display:flex;align-items:center;gap:12px;padding:14px 18px;}
@@ -377,6 +393,7 @@
   <div class="yk-archive" id="ykArchive" hidden>
     <button type="button" class="yk-archive-toggle" id="ykArchiveToggle" aria-expanded="false" aria-controls="ykArchiveBody">これまでの四コマ <span id="ykArchiveCount"></span></button>
     <div class="yk-archive-body" id="ykArchiveBody" hidden>
+      <div class="yk-num-grid" id="ykNumGrid" role="group" aria-label="話数で選ぶ"></div>
       <!-- 過去分はここに新しい順で追加する（全話残す・上限なし）。1話のひな形:
       <article class="yk-past">
         <h3 class="yk-past-title">第N話　タイトル</h3>
@@ -387,7 +404,9 @@
         </div>
         <p class="yk-past-phrase">締めの一言</p>
       </article>
+      ※ .yk-past はデータ置き場で、画面には出ない（CSSで非表示）。「これまでの四コマ」を開くと、JSが .yk-past-title の「第N話」から数字だけのボタンを自動生成する（話数の小さい順）。タップした話だけがポップアップで開き、タイトル・掲載日は開いた先で表示される。画像は選ばれた話の分だけ読み込む（全話の先読みはしない）。
       ※話数（第N話）は掲載順の通し番号。その話が最新だった時の番号のまま付ける（アーカイブに移しても番号は変えない）。
+      ※ポップアップ内には「← 前の話／次の話 →」が上下両方にあり、最新話を含む全話を順に読める。
       ※「♡ほっとした」ボタンはポップアップ側で話ごとに自動で効く（IDはパネル画像名の yonkoma-YYYYMMDD から自動生成される）。過去分を足すときにボタン側の作業は不要。
       -->
       <article class="yk-past">
@@ -507,6 +526,13 @@
 <div class="modal-bg" id="ykBg" hidden>
   <div class="modal" id="ykModal" role="dialog" aria-modal="true" aria-label="火水四コマ（拡大表示）">
     <button class="modal-close" id="ykClose" type="button" aria-label="閉じる">×</button>
+    <div class="yk-nav yk-nav-top" id="ykNavTop" hidden>
+      <button type="button" class="yk-nav-btn" data-yk-nav="prev">← 前の話</button>
+      <span class="yk-nav-no" id="ykNavNoTop"></span>
+      <button type="button" class="yk-nav-btn" data-yk-nav="next">次の話 →</button>
+    </div>
+    <p class="yk-modal-ep" id="ykModalEp" hidden></p>
+    <p class="yk-modal-date" id="ykModalDate" hidden></p>
     <div class="yk-modal-stack">
       <img src="yonkoma-20261122r-w1.webp" width="1200" height="900" alt="四コマ1：雨に気づいてあわてるひーくん。『あ、雨だ！　洗濯物！』">
       <img src="yonkoma-20261122r-w2.webp" width="1200" height="900" alt="四コマ2：洗濯物を抱えて走るひーくんと、窓辺でぼーっと雨を眺めるみーちゃん" loading="lazy">
@@ -515,6 +541,11 @@
     </div>
     <p class="yk-modal-phrase">雨の日は、雨の音を聞く日に</p>
     <div class="m-like-wrap"><button class="like" id="ykLike" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
+    <div class="yk-nav yk-nav-bottom" id="ykNavBottom" hidden>
+      <button type="button" class="yk-nav-btn" data-yk-nav="prev">← 前の話</button>
+      <span class="yk-nav-no" id="ykNavNoBottom"></span>
+      <button type="button" class="yk-nav-btn" data-yk-nav="next">次の話 →</button>
+    </div>
     <button class="howto-close-bottom" id="ykCloseBottom" type="button">閉じる</button>
   </div>
 </div>
@@ -915,21 +946,107 @@
     }
     if (modalPhrase && phrase != null) modalPhrase.textContent = phrase;
   }
+  // 全話リスト（数字ボタン・前後移動用）: 最新話＋過去話を話数の昇順に並べる
+  var modalEp = document.getElementById('ykModalEp');
+  var modalDate = document.getElementById('ykModalDate');
+  var navTop = document.getElementById('ykNavTop');
+  var navBottom = document.getElementById('ykNavBottom');
+  function epNoOf(text){ var m = /第(\d+)話/.exec(text || ''); return m ? parseInt(m[1], 10) : 0; }
+  var episodes = [];
+  (function(){
+    var epLine = ykBox ? ykBox.querySelector('.yk-ep') : null;
+    var epText = epLine ? epLine.textContent : '';
+    var tM = /「([^」]*)」/.exec(epText);
+    var dM = /・\s*(.+)$/.exec(epText);
+    episodes.push({
+      no: epNoOf(epText), title: tM ? tM[1] : '', date: dM ? dM[1].trim() : '',
+      set: currentSet, phrase: currentPhrase, id: latestYkId, latest: true
+    });
+    var pastEls = document.querySelectorAll('#ykArchiveBody .yk-past');
+    for (var k = 0; k < pastEls.length; k++) {
+      var el = pastEls[k];
+      var titleEl = el.querySelector('.yk-past-title');
+      var titleText = titleEl ? titleEl.textContent : '';
+      var dateEl = el.querySelector('.yk-past-date');
+      var phEl = el.querySelector('.yk-past-phrase');
+      var pn = el.querySelectorAll('.yk-panel');
+      episodes.push({
+        no: epNoOf(titleText),
+        title: titleText.replace(/第\d+話\s*/, '').trim(),
+        date: dateEl ? dateEl.textContent.trim() : '',
+        set: modalSetFrom(pn),
+        phrase: phEl ? phEl.textContent : '',
+        id: pn.length ? ykIdFromSrc(pn[0].getAttribute('data-src') || pn[0].getAttribute('src')) : null,
+        latest: false
+      });
+    }
+    episodes.sort(function(a, b){ return a.no - b.no; });
+  })();
+  var latestEpIdx = 0;
+  for (var li = 0; li < episodes.length; li++) { if (episodes[li].latest) latestEpIdx = li; }
+  var curEp = -1;
+  var numBtns = [];
+  function renderNav(){
+    var show = curEp >= 0 && episodes.length >= 2;
+    if (navTop) navTop.hidden = !show;
+    if (navBottom) navBottom.hidden = !show;
+    if (!show) return;
+    var label = '第' + episodes[curEp].no + '話';
+    var noTop = document.getElementById('ykNavNoTop');
+    var noBottom = document.getElementById('ykNavNoBottom');
+    if (noTop) noTop.textContent = label;
+    if (noBottom) noBottom.textContent = label;
+    var btns = modal.querySelectorAll('[data-yk-nav]');
+    for (var b = 0; b < btns.length; b++) {
+      if (btns[b].getAttribute('data-yk-nav') === 'prev') btns[b].disabled = (curEp <= 0);
+      else btns[b].disabled = (curEp >= episodes.length - 1);
+    }
+  }
+  function markNumBtn(){
+    for (var b = 0; b < numBtns.length; b++) {
+      var on = curEp >= 0 && numBtns[b].epIdx === curEp;
+      numBtns[b].btn.classList.toggle('sel', on);
+      numBtns[b].btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+  }
   var pushed = false;
-  function openYk(idx, set, phrase, id){
-    if (set) setModal(set, phrase);
-    if (id) curYkId = id;
+  function openEpisode(epIdx, panelIdx){
+    var ep = episodes[epIdx];
+    if (!ep) return;
+    curEp = epIdx;
+    setModal(ep.set, ep.phrase);
+    curYkId = ep.id;
     paintYkLike();
-    bg.hidden = false;
-    document.body.style.overflow = 'hidden';
-    try { history.pushState({hottoYonkoma:true}, ''); pushed = true; } catch(e){}
+    if (modalEp) { modalEp.textContent = '第' + ep.no + '話「' + ep.title + '」'; modalEp.hidden = false; }
+    if (modalDate) { modalDate.textContent = ep.date; modalDate.hidden = !ep.date; }
+    renderNav();
+    markNumBtn();
+    if (bg.hidden) {
+      bg.hidden = false;
+      document.body.style.overflow = 'hidden';
+      try { history.pushState({hottoYonkoma:true}, ''); pushed = true; } catch(e){}
+    }
     var imgs = modal.querySelectorAll('.yk-modal-stack img');
-    var target = imgs[idx];
+    var target = imgs[panelIdx || 0];
     if (target) {
       requestAnimationFrame(function(){
         modal.scrollTop = Math.max(0, target.offsetTop - 64);
       });
+    } else {
+      modal.scrollTop = 0;
     }
+  }
+  function stepEp(delta){
+    if (curEp < 0) return;
+    var n = curEp + delta;
+    if (n < 0 || n >= episodes.length) return;
+    openEpisode(n, 0);
+  }
+  var navBtnsAll = modal.querySelectorAll('[data-yk-nav]');
+  for (var nb = 0; nb < navBtnsAll.length; nb++) {
+    (function(btn){
+      btn.addEventListener('click', function(){ stepEp(btn.getAttribute('data-yk-nav') === 'prev' ? -1 : 1); });
+    })(navBtnsAll[nb]);
   }
   function closeYk(fromPop){
     if (bg.hidden) { pushed = false; return; }
@@ -945,49 +1062,46 @@
   }
   for (var i = 0; i < panels.length; i++) {
     (function(idx){
-      panels[idx].addEventListener('click', function(){ openYk(idx, currentSet, currentPhrase, latestYkId); });
+      panels[idx].addEventListener('click', function(){ openEpisode(latestEpIdx, idx); });
       panels[idx].addEventListener('keydown', function(ev){
-        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openYk(idx, currentSet, currentPhrase, latestYkId); }
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openEpisode(latestEpIdx, idx); }
       });
     })(i);
   }
   // これまでの四コマ（アーカイブ）: 過去分が1話以上ある時だけ入口を出す
+  // 開くと数字だけのボタンが話数順に並び、タップした話だけをポップアップで開く（全話の先読みはしない）
   var arch = document.getElementById('ykArchive');
   if (arch) {
-    var pasts = arch.querySelectorAll('.yk-past');
-    if (pasts.length > 0) {
+    var pastCount = 0;
+    for (var pc = 0; pc < episodes.length; pc++) { if (!episodes[pc].latest) pastCount++; }
+    if (pastCount > 0) {
       arch.hidden = false;
       var toggle = document.getElementById('ykArchiveToggle');
       var archBody = document.getElementById('ykArchiveBody');
       var countEl = document.getElementById('ykArchiveCount');
-      if (countEl) countEl.textContent = '（全' + pasts.length + '話）';
-      var archLoaded = false;
+      if (countEl) countEl.textContent = '（全' + pastCount + '話）';
       toggle.addEventListener('click', function(){
         var open = archBody.hidden;
         archBody.hidden = !open;
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (open && !archLoaded) {
-          archLoaded = true;
-          var lazyImgs = archBody.querySelectorAll('img[data-src]');
-          for (var j = 0; j < lazyImgs.length; j++) { lazyImgs[j].src = lazyImgs[j].getAttribute('data-src'); }
-        }
       });
-      for (var p = 0; p < pasts.length; p++) {
-        (function(ep){
-          var epPanels = ep.querySelectorAll('.yk-panel');
-          var phraseEl = ep.querySelector('.yk-past-phrase');
-          var epPhrase = phraseEl ? phraseEl.textContent : '';
-          var epId = epPanels.length ? ykIdFromSrc(epPanels[0].getAttribute('data-src') || epPanels[0].getAttribute('src')) : null;
-          for (var q = 0; q < epPanels.length; q++) {
-            (function(idx){
-              function openPast(){ openYk(idx, modalSetFrom(epPanels), epPhrase, epId); }
-              epPanels[idx].addEventListener('click', openPast);
-              epPanels[idx].addEventListener('keydown', function(ev){
-                if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openPast(); }
-              });
-            })(q);
-          }
-        })(pasts[p]);
+      var grid = document.getElementById('ykNumGrid');
+      if (grid) {
+        for (var gi = 0; gi < episodes.length; gi++) {
+          (function(epIdx){
+            var ep = episodes[epIdx];
+            if (ep.latest) return;
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'yk-num-btn';
+            btn.textContent = ep.no;
+            btn.setAttribute('aria-label', '第' + ep.no + '話を読む');
+            btn.setAttribute('aria-pressed', 'false');
+            btn.addEventListener('click', function(){ openEpisode(epIdx, 0); });
+            grid.appendChild(btn);
+            numBtns.push({ btn: btn, epIdx: epIdx });
+          })(gi);
+        }
       }
     }
   }
