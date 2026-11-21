@@ -128,6 +128,8 @@
   .yk-new{display:inline-block;vertical-align:middle;margin-left:8px;background:var(--green-deep);color:#fff;font-size:11px;font-weight:800;letter-spacing:.1em;border-radius:999px;padding:2px 9px;}
   .yk-new[hidden]{display:none;}
   .yk-hint{font-size:14px;color:var(--sub);margin:2px 0 0;}
+  .yk-ep{font-size:13.5px;color:var(--sub);margin:5px 0 0;}
+  .yk-ep-no{font-weight:800;color:var(--green-deep);}
   .yk-stack{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px;}
   .yk-panel{display:block;width:70%;max-width:480px;height:auto;border-radius:14px;background:#fff;box-shadow:0 2px 10px rgba(90,110,60,.06);cursor:pointer;}
   .yk-panel:active{opacity:.75;}
@@ -365,6 +367,7 @@
   <section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-22">
     <h2>火水四コマ<span class="yk-new" id="ykNew" hidden>NEW</span></h2>
     <p class="yk-hint">タップすると、大きく読めます</p>
+    <p class="yk-ep"><span class="yk-ep-no">第2話</span>「雨の日」・2026年11月22日</p>
     <div class="yk-stack">
       <img class="yk-panel" src="yonkoma-20261122r-w1.webp" width="1200" height="900" tabindex="0" role="button" aria-label="四コマを大きく表示（1コマ目）" alt="四コマ1：雨に気づいてあわてるひーくん。『あ、雨だ！　洗濯物！』">
       <img class="yk-panel" src="yonkoma-20261122r-w2.webp" width="1200" height="900" tabindex="0" role="button" aria-label="四コマを大きく表示（2コマ目）" alt="四コマ2：洗濯物を抱えて走るひーくんと、窓辺でぼーっと雨を眺めるみーちゃん" loading="lazy">
@@ -380,9 +383,9 @@
   <div class="yk-archive" id="ykArchive" hidden>
     <button type="button" class="yk-archive-toggle" id="ykArchiveToggle" aria-expanded="false" aria-controls="ykArchiveBody">これまでの四コマ <span id="ykArchiveCount"></span></button>
     <div class="yk-archive-body" id="ykArchiveBody" hidden>
-      <!-- 過去分はここに新しい順で追加する（最大5話）。1話のひな形:
+      <!-- 過去分はここに新しい順で追加する（全話残す・上限なし）。1話のひな形:
       <article class="yk-past">
-        <h3 class="yk-past-title">タイトル</h3>
+        <h3 class="yk-past-title">第N話　タイトル</h3>
         <p class="yk-past-date">2026年11月22日</p>
         <div class="yk-stack">
           <img class="yk-panel" data-src="yonkoma-YYYYMMDD-w1.webp" width="1200" height="900" tabindex="0" role="button" aria-label="四コマを大きく表示（1コマ目）" alt="四コマ1：…" loading="lazy">
@@ -390,10 +393,11 @@
         </div>
         <p class="yk-past-phrase">締めの一言</p>
       </article>
+      ※話数（第N話）は掲載順の通し番号。その話が最新だった時の番号のまま付ける（アーカイブに移しても番号は変えない）。
       ※「♡ほっとした」ボタンはポップアップ側で話ごとに自動で効く（IDはパネル画像名の yonkoma-YYYYMMDD から自動生成される）。過去分を足すときにボタン側の作業は不要。
       -->
       <article class="yk-past">
-        <h3 class="yk-past-title">いい夫婦の日</h3>
+        <h3 class="yk-past-title">第1話　いい夫婦の日</h3>
         <p class="yk-past-date">2026年11月22日</p>
         <div class="yk-stack">
           <img class="yk-panel" data-src="yonkoma-20261122-w1.webp" width="1200" height="900" tabindex="0" role="button" aria-label="四コマを大きく表示（1コマ目）" alt="四コマ1：『今日は「いい夫婦の日」！特別な日にしよう！』と張り切るひーくんと、隣でほほえむみーちゃん" loading="lazy">
