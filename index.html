@@ -105,17 +105,24 @@
   .mori-link .t1{font-weight:800;font-size:16px;}
   .mori-link .t2{font-size:13px;color:#5c7263;}
   .mori-link .arrow{margin-left:auto;font-size:20px;color:var(--green);}
-  .omake{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;}
-  .omake h2{font-size:15px;color:var(--green-deep);margin:0 0 6px;}
-  .om-block{margin-top:10px;}
-  .om-label{font-size:12px;font-weight:800;color:var(--green);letter-spacing:.06em;}
-  .om-quote{font-size:15.5px;font-weight:700;line-height:1.8;margin:4px 0 0;color:var(--ink);}
-  .om-person{font-size:12.5px;color:var(--sub);margin:2px 0 0;text-align:right;}
-  .om-list{list-style:none;margin:4px 0 0;padding:0;}
-  .om-list li{font-size:13.5px;line-height:1.7;padding:3px 0;}
+  .omake{margin-top:30px;}
+  .omake h2{font-size:16px;font-weight:800;color:var(--green-deep);margin:0 0 2px;}
+  .om-card{border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:14px;
+    box-shadow:0 2px 10px rgba(90,110,60,.06);}
+  .om-card--quote{background:#fbf1dc;border-color:#ecdcae;}
+  .om-card--birthday{background:#edf4e3;border-color:#cfdfc2;}
+  .om-card--whatday{background:#e9f2f8;border-color:#c2dcee;}
+  .om-label{font-size:14px;font-weight:800;letter-spacing:.06em;}
+  .om-card--quote .om-label{color:#8a5a10;}
+  .om-card--birthday .om-label{color:var(--green-deep);}
+  .om-card--whatday .om-label{color:#2e6183;}
+  .om-quote{font-size:17px;font-weight:700;line-height:1.8;margin:6px 0 0;color:var(--ink);}
+  .om-person{font-size:13.5px;color:var(--sub);margin:4px 0 0;text-align:right;}
+  .om-list{list-style:none;margin:6px 0 0;padding:0;}
+  .om-list li{font-size:16px;line-height:1.7;padding:4px 0;}
   .om-list .om-name{font-weight:800;}
-  .om-list .om-years{font-size:12px;color:var(--sub);margin-left:6px;}
-  .om-list .om-note{display:block;font-size:12.5px;color:var(--sub);}
+  .om-list .om-years{font-size:13px;color:var(--sub);margin-left:6px;}
+  .om-list .om-note{display:block;font-size:13.5px;color:var(--sub);}
   .mori-link-img{flex-direction:column;align-items:stretch;padding:0;overflow:hidden;gap:0;}
   .mori-link-img .card-img{width:100%;height:170px;object-fit:cover;display:block;}
   .mori-link-img .card-row{display:flex;align-items:center;gap:12px;padding:14px 18px;}
@@ -329,16 +336,16 @@
 
   <section class="omake" id="omakeBox" hidden>
     <h2>おまけ</h2>
-    <div class="om-block" id="omQuote" hidden>
+    <div class="om-card om-card--quote" id="omQuote" hidden>
       <div class="om-label">今日の一言</div>
       <p class="om-quote" id="omQuoteText"></p>
       <p class="om-person" id="omQuotePerson"></p>
     </div>
-    <div class="om-block" id="omBirthdays" hidden>
+    <div class="om-card om-card--birthday" id="omBirthdays" hidden>
       <div class="om-label" id="omBirthdayLabel">今日が誕生日の偉人</div>
       <ul class="om-list" id="omBirthdayList"></ul>
     </div>
-    <div class="om-block" id="omWhatDay" hidden>
+    <div class="om-card om-card--whatday" id="omWhatDay" hidden>
       <div class="om-label">今日は何の日</div>
       <ul class="om-list" id="omWhatDayList"></ul>
     </div>
