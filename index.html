@@ -125,6 +125,8 @@
   .om-list .om-note{display:block;font-size:13.5px;color:var(--sub);}
   .yonkoma{margin-top:30px;}
   .yonkoma h2{font-size:16px;font-weight:800;color:var(--green-deep);margin:0 0 2px;}
+  .yk-new{display:inline-block;vertical-align:middle;margin-left:8px;background:var(--green-deep);color:#fff;font-size:11px;font-weight:800;letter-spacing:.1em;border-radius:999px;padding:2px 9px;}
+  .yk-new[hidden]{display:none;}
   .yk-hint{font-size:14px;color:var(--sub);margin:2px 0 0;}
   .yk-stack{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:12px;}
   .yk-panel{display:block;width:70%;max-width:480px;height:auto;border-radius:14px;background:#fff;box-shadow:0 2px 10px rgba(90,110,60,.06);cursor:pointer;}
@@ -138,6 +140,17 @@
   .yk-ehon{text-align:center;margin-top:2px;}
   .yk-ehon a{display:inline-block;min-height:48px;padding:12px 18px;font-size:14px;font-weight:700;color:var(--green);text-decoration:none;}
   .yk-ehon a:active{opacity:.6;}
+  .yk-archive{margin-top:18px;text-align:center;}
+  .yk-archive[hidden]{display:none;}
+  .yk-archive-toggle{min-height:48px;padding:10px 22px;font-size:14.5px;font-weight:700;color:var(--green-deep);background:#fff;border:1.5px solid var(--green);border-radius:999px;cursor:pointer;}
+  .yk-archive-toggle:active{opacity:.7;}
+  .yk-archive-body{margin-top:16px;text-align:left;}
+  .yk-archive-body[hidden]{display:none;}
+  .yk-past{margin-top:26px;}
+  .yk-past:first-child{margin-top:6px;}
+  .yk-past-title{font-size:15.5px;font-weight:800;color:var(--ink);margin:0;}
+  .yk-past-date{font-size:13px;color:var(--sub);margin:2px 0 0;}
+  .yk-past-phrase{font-size:16px;font-weight:800;color:var(--ink);text-align:center;margin:10px 0 0;}
   .mori-link-img{flex-direction:column;align-items:stretch;padding:0;overflow:hidden;gap:0;}
   .mori-link-img .card-img{width:100%;height:170px;object-fit:cover;display:block;}
   .mori-link-img .card-row{display:flex;align-items:center;gap:12px;padding:14px 18px;}
@@ -349,8 +362,8 @@
 </noscript>
 <!-- static-articles:end -->
 
-  <section class="yonkoma" id="yonkomaBox" aria-label="今日の四コマ">
-    <h2>今日の四コマ</h2>
+  <section class="yonkoma" id="yonkomaBox" aria-label="今日の四コマ" data-date="2026-11-22">
+    <h2>今日の四コマ<span class="yk-new" id="ykNew" hidden>NEW</span></h2>
     <p class="yk-hint">タップすると、大きく読めます</p>
     <div class="yk-stack">
       <img class="yk-panel" src="yonkoma-20261122-w1.webp" width="1200" height="900" tabindex="0" role="button" aria-label="四コマを大きく表示（1コマ目）" alt="四コマ1：『今日は「いい夫婦の日」！特別な日にしよう！』と張り切るひーくんと、隣でほほえむみーちゃん">
@@ -363,6 +376,23 @@
     </div>
     <p class="yk-ehon"><a href="https://kasuiehon.pages.dev/" target="_blank" rel="noopener noreferrer">絵本『ひーくんと みーちゃん』はこちら →</a></p>
   </section>
+
+  <div class="yk-archive" id="ykArchive" hidden>
+    <button type="button" class="yk-archive-toggle" id="ykArchiveToggle" aria-expanded="false" aria-controls="ykArchiveBody">これまでの四コマ <span id="ykArchiveCount"></span></button>
+    <div class="yk-archive-body" id="ykArchiveBody" hidden>
+      <!-- 過去分はここに新しい順で追加する（最大5話）。1話のひな形:
+      <article class="yk-past">
+        <h3 class="yk-past-title">タイトル</h3>
+        <p class="yk-past-date">2026年11月22日</p>
+        <div class="yk-stack">
+          <img class="yk-panel" data-src="yonkoma-YYYYMMDD-w1.webp" width="1200" height="900" tabindex="0" role="button" aria-label="四コマを大きく表示（1コマ目）" alt="四コマ1：…" loading="lazy">
+          （w2〜w4 も同様に data-src で置く。src ではなく data-src にするのが遅延読み込みの要点）
+        </div>
+        <p class="yk-past-phrase">締めの一言</p>
+      </article>
+      -->
+    </div>
+  </div>
 
   <section class="omake" id="omakeBox" hidden>
     <h2>おまけ</h2>
@@ -784,12 +814,47 @@
 </script>
 <script>
 (function(){
+  // 四コマのNEWバッジ: セクションの data-date（掲載日）の前後3日以内だけ表示する
+  var ykBox = document.getElementById('yonkomaBox');
+  var ykNew = document.getElementById('ykNew');
+  if (ykBox && ykNew) {
+    var dstr = ykBox.getAttribute('data-date');
+    if (dstr) {
+      var parts = dstr.split('-');
+      if (parts.length === 3) {
+        var pub = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var diffDays = Math.round((today - pub) / 86400000);
+        if (diffDays >= -3 && diffDays <= 3) ykNew.hidden = false;
+      }
+    }
+  }
   var bg = document.getElementById('ykBg');
   var modal = document.getElementById('ykModal');
   if (!bg || !modal) return;
   var panels = document.querySelectorAll('#yonkomaBox .yk-panel');
+  var modalImgs = modal.querySelectorAll('.yk-modal-stack img');
+  var modalPhrase = modal.querySelector('.yk-modal-phrase');
+  function modalSetFrom(imgs){
+    var out = [];
+    for (var j = 0; j < imgs.length; j++) {
+      out.push({ src: imgs[j].getAttribute('src') || imgs[j].getAttribute('data-src') || '', alt: imgs[j].getAttribute('alt') || '' });
+    }
+    return out;
+  }
+  var currentSet = modalSetFrom(modalImgs);
+  var currentPhrase = modalPhrase ? modalPhrase.textContent : '';
+  function setModal(set, phrase){
+    for (var j = 0; j < modalImgs.length; j++) {
+      if (set[j]) { modalImgs[j].src = set[j].src; modalImgs[j].alt = set[j].alt; modalImgs[j].hidden = false; }
+      else { modalImgs[j].hidden = true; }
+    }
+    if (modalPhrase && phrase != null) modalPhrase.textContent = phrase;
+  }
   var pushed = false;
-  function openYk(idx){
+  function openYk(idx, set, phrase){
+    if (set) setModal(set, phrase);
     bg.hidden = false;
     document.body.style.overflow = 'hidden';
     try { history.pushState({hottoYonkoma:true}, ''); pushed = true; } catch(e){}
@@ -815,11 +880,50 @@
   }
   for (var i = 0; i < panels.length; i++) {
     (function(idx){
-      panels[idx].addEventListener('click', function(){ openYk(idx); });
+      panels[idx].addEventListener('click', function(){ openYk(idx, currentSet, currentPhrase); });
       panels[idx].addEventListener('keydown', function(ev){
-        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openYk(idx); }
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openYk(idx, currentSet, currentPhrase); }
       });
     })(i);
+  }
+  // これまでの四コマ（アーカイブ）: 過去分が1話以上ある時だけ入口を出す
+  var arch = document.getElementById('ykArchive');
+  if (arch) {
+    var pasts = arch.querySelectorAll('.yk-past');
+    if (pasts.length > 0) {
+      arch.hidden = false;
+      var toggle = document.getElementById('ykArchiveToggle');
+      var archBody = document.getElementById('ykArchiveBody');
+      var countEl = document.getElementById('ykArchiveCount');
+      if (countEl) countEl.textContent = '（全' + pasts.length + '話）';
+      var archLoaded = false;
+      toggle.addEventListener('click', function(){
+        var open = archBody.hidden;
+        archBody.hidden = !open;
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open && !archLoaded) {
+          archLoaded = true;
+          var lazyImgs = archBody.querySelectorAll('img[data-src]');
+          for (var j = 0; j < lazyImgs.length; j++) { lazyImgs[j].src = lazyImgs[j].getAttribute('data-src'); }
+        }
+      });
+      for (var p = 0; p < pasts.length; p++) {
+        (function(ep){
+          var epPanels = ep.querySelectorAll('.yk-panel');
+          var phraseEl = ep.querySelector('.yk-past-phrase');
+          var epPhrase = phraseEl ? phraseEl.textContent : '';
+          for (var q = 0; q < epPanels.length; q++) {
+            (function(idx){
+              function openPast(){ openYk(idx, modalSetFrom(epPanels), epPhrase); }
+              epPanels[idx].addEventListener('click', openPast);
+              epPanels[idx].addEventListener('keydown', function(ev){
+                if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openPast(); }
+              });
+            })(q);
+          }
+        })(pasts[p]);
+      }
+    }
   }
   document.getElementById('ykClose').addEventListener('click', function(){ closeYk(false); });
   document.getElementById('ykCloseBottom').addEventListener('click', function(){ closeYk(false); });
