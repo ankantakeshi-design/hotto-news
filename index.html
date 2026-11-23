@@ -95,6 +95,14 @@
   .m-like-wrap{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);text-align:center;}
   .m-like-wrap .like{margin-left:0;font-size:15px;padding:11px 22px;}
   .m-like-wrap--top{margin-top:2px;padding-top:0;border-top:none;text-align:left;}
+  .m-share-wrap{margin-top:14px;text-align:center;}
+  .share-btn{display:inline-flex;align-items:center;gap:7px;min-height:48px;
+    font-family:inherit;font-size:15px;font-weight:700;color:#fff;
+    background:var(--green);border:1px solid var(--green);border-radius:999px;
+    padding:11px 24px;cursor:pointer;transition:all .15s;}
+  .share-btn:active{opacity:.75;}
+  .m-share-msg{margin:8px 0 0;font-size:13px;color:var(--green-deep);font-weight:700;}
+  .m-share-msg[hidden]{display:none;}
   .my-hotto .pill .n.pop{animation:cntPop .45s ease;}
   @keyframes cntPop{0%{transform:scale(1);}40%{transform:scale(1.45);}100%{transform:scale(1);}}
   .mori-link{
@@ -531,6 +539,7 @@
     <p class="m-body" id="mBody"></p>
     <div class="m-more"><a id="mLink" target="_blank" rel="noopener noreferrer">元の記事を読む →</a> <span class="src" id="mSrc"></span></div>
     <div class="m-like-wrap"><button class="like" id="mLike" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
+    <div class="m-share-wrap"><button class="share-btn" id="mShare" type="button">この記事をシェアする</button><p class="m-share-msg" id="mShareMsg" hidden>コピーしました</p></div>
   </div>
 </div>
 
@@ -655,6 +664,7 @@
   var mLike = document.getElementById('mLike');
   var mLikeTop = document.getElementById('mLikeTop');
   var curId = null;
+  var curItem = null;
 
   function paintLike(){
     if (!curId) return;
@@ -720,6 +730,7 @@
   };
   function openModal(id, it){
     curId = id;
+    curItem = it;
     mArea.className = 'area' + (it.area === '日本' ? ' jp' : '');
     mArea.textContent = it.area;
     mTitle.textContent = it.title;
@@ -734,6 +745,7 @@
     modalBg.hidden = true;
     document.body.style.overflow = '';
     curId = null;
+    curItem = null;
   }
   document.getElementById('modalClose').addEventListener('click', closeModal);
   modalBg.addEventListener('click', function(ev){ if (ev.target === modalBg) closeModal(); });
@@ -748,8 +760,43 @@
     if (window.HottoLikes.like(curId, mLikeTop)) paintLike();
   });
 
+  // 記事のシェア: リンク先は元の記事ではなく、ほっとニュース内のこの記事（#a=<記事ID>）にする
+  var mShare = document.getElementById('mShare');
+  var mShareMsg = document.getElementById('mShareMsg');
+  var shareMsgTimer = null;
+  function showShareMsg(){
+    if (!mShareMsg) return;
+    mShareMsg.hidden = false;
+    if (shareMsgTimer) clearTimeout(shareMsgTimer);
+    shareMsgTimer = setTimeout(function(){ mShareMsg.hidden = true; }, 2200);
+  }
+  function fallbackCopyShare(t){
+    var ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showShareMsg(); } catch(e) {}
+    ta.remove();
+  }
+  if (mShare) mShare.addEventListener('click', function(){
+    if (!curId || !curItem) return;
+    var shareUrl = 'https://hotto-news.pages.dev/#a=' + encodeURIComponent(curId);
+    if (navigator.share) {
+      navigator.share({ title: '森のほっとニュース', text: curItem.title, url: shareUrl }).catch(function(){});
+    } else {
+      var copyText = curItem.title + '\n' + shareUrl;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(copyText).then(function(){ showShareMsg(); }).catch(function(){ fallbackCopyShare(copyText); });
+      } else {
+        fallbackCopyShare(copyText);
+      }
+    }
+  });
+
   var hlList = document.getElementById('headlineList');
   var tabsBox = document.getElementById('catTabs');
+  var itemsById = {};
   D.categories.forEach(function(cat, ci){
     var tab = document.createElement('span');
     tab.className = 'cat-tab';
@@ -759,6 +806,7 @@
     tabsBox.appendChild(tab);
     cat.items.forEach(function(it, ii){
       var id = (D.dateISO || 'day') + '-c' + ci + 'i' + ii;
+      itemsById[id] = it;
       var li = document.createElement('li');
       li.setAttribute('data-cat', ci);
       var a = document.createElement('a');
@@ -779,6 +827,16 @@
       hlList.appendChild(li);
     });
   });
+
+  // シェアURL（#a=<記事ID>）で開かれたら、その記事のポップアップを自動で開く
+  (function(){
+    var hm = /(?:^#|&)a=([^&]+)/.exec(location.hash || '');
+    if (!hm) return;
+    var targetId = hm[1];
+    try { targetId = decodeURIComponent(targetId); } catch(e) {}
+    var target = itemsById[targetId];
+    if (target) { markRead(targetId); openModal(targetId, target); }
+  })();
 
   fetch(SB_URL + '/rest/v1/hotto_likes?select=article_id,cnt', {
     headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
