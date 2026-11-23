@@ -782,10 +782,11 @@
   if (mShare) mShare.addEventListener('click', function(){
     if (!curId || !curItem) return;
     var shareUrl = 'https://hotto-news.pages.dev/#a=' + encodeURIComponent(curId);
+    var shareText = '森のほっとニュース\n' + curItem.title;
     if (navigator.share) {
-      navigator.share({ title: '森のほっとニュース', text: curItem.title, url: shareUrl }).catch(function(){});
+      navigator.share({ title: '森のほっとニュース', text: shareText, url: shareUrl }).catch(function(){});
     } else {
-      var copyText = curItem.title + '\n' + shareUrl;
+      var copyText = shareText + '\n' + shareUrl;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(copyText).then(function(){ showShareMsg(); }).catch(function(){ fallbackCopyShare(copyText); });
       } else {
