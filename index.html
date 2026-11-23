@@ -94,6 +94,7 @@
   .m-more a{color:var(--accent2);font-weight:700;text-decoration:none;}
   .m-like-wrap{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);text-align:center;}
   .m-like-wrap .like{margin-left:0;font-size:15px;padding:11px 22px;}
+  .m-like-wrap--top{margin-top:2px;padding-top:0;border-top:none;text-align:left;}
   .my-hotto .pill .n.pop{animation:cntPop .45s ease;}
   @keyframes cntPop{0%{transform:scale(1);}40%{transform:scale(1.45);}100%{transform:scale(1);}}
   .mori-link{
@@ -213,12 +214,19 @@
     18%{opacity:1;}
     100%{transform:translate(var(--dx,0px),-58px) scale(1.2) rotate(var(--rot,0deg));opacity:0;}
   }
+  .archive-link{margin-top:12px;text-align:right;}
+  .archive-link[hidden]{display:none;}
+  .archive-link a{color:var(--green-deep);font-size:13.5px;font-weight:700;text-decoration:none;}
   .archive{margin-top:44px;}
   .archive h2{font-size:17px;margin-bottom:10px;color:var(--green-deep);}
   .archive li{list-style:none;font-size:14px;color:var(--sub);padding:6px 0;border-bottom:1px dashed var(--line);}
   .home-note{margin-top:44px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;}
   .home-note .hn-title{font-weight:800;color:var(--green-deep);font-size:15.5px;margin-bottom:6px;text-align:center;}
   .home-note p{font-size:13.5px;color:var(--sub);line-height:1.9;}
+  .hn-steps{margin:8px 0 0;padding-left:1.4em;font-size:14.5px;line-height:1.8;color:var(--ink);}
+  .hn-steps li{padding:3px 0;}
+  .hn-steps .hn-dev{font-weight:800;color:var(--green-deep);}
+  .modal .hn-steps{font-size:15px;color:#5d493f;}
   .home-note[hidden]{display:none;}
   .hn-done{display:block;margin:14px auto 2px;min-height:48px;padding:12px 30px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;}
   .hn-done:active{opacity:.75;}
@@ -313,6 +321,7 @@
   <div class="headlines">
     <div class="hl-head"><span class="date-inline" id="dateLabel"></span></div>
     <ul id="headlineList"></ul>
+    <div class="archive-link" id="archiveLink" hidden><a href="#archiveBox">これまでのニュース（過去14日分）は、こちら ↓</a></div>
   </div>
 
 <!-- static-articles:start -->
@@ -463,10 +472,12 @@
 
   <div class="home-note" id="homeNote">
     <div class="hn-title">ほっとニュースを、ホーム画面に置けます</div>
-    <p>iPhoneの方：Safariで開いて、下の共有ボタン（□に↑のマーク）から「ホーム画面に追加」。<br>
-    Androidの方：Chromeで開いて、右上のメニュー（︙）から「ホーム画面に追加」。<br>
-    パソコンの方：Chromeの右上のメニュー（︙）から「保存と共有」→「ショートカットを作成」で、デスクトップに置けます。ブックマーク（お気に入り）に入れておいても大丈夫です。<br>
-    番人のアイコンから、毎朝のニュースにすぐ来られますよ。</p>
+    <ol class="hn-steps">
+      <li><span class="hn-dev">iPhone</span>：Safariで開く → 下の共有ボタン（□に↑）→「ホーム画面に追加」</li>
+      <li><span class="hn-dev">Android</span>：Chromeで開く → 右上のメニュー（︙）→「ホーム画面に追加」</li>
+      <li><span class="hn-dev">パソコン</span>：Chromeのメニュー（︙）→「保存と共有」→「ショートカットを作成」</li>
+    </ol>
+    <p>番人のアイコンから、毎朝のニュースにすぐ来られますよ。ブックマーク（お気に入り）に入れておいても大丈夫です。</p>
     <button class="hn-done" id="homeDoneBtn" type="button">ホーム画面に置けました</button>
   </div>
   <script>try{ if (localStorage.getItem('hotto-homescreen-done') === '1') document.getElementById('homeNote').hidden = true; }catch(e){}</script>
@@ -510,6 +521,7 @@
     <button class="modal-close" id="modalClose" type="button" aria-label="閉じる">×</button>
     <span class="area" id="mArea"></span>
     <h3 id="mTitle"></h3>
+    <div class="m-like-wrap m-like-wrap--top"><button class="like" id="mLikeTop" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
     <p class="m-body" id="mBody"></p>
     <div class="m-more"><a id="mLink" target="_blank" rel="noopener noreferrer">元の記事を読む →</a> <span class="src" id="mSrc"></span></div>
     <div class="m-like-wrap"><button class="like" id="mLike" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
@@ -520,10 +532,12 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="howtoTitle">
     <button class="modal-close" id="howtoClose" type="button" aria-label="閉じる">×</button>
     <h3 id="howtoTitle">ほっとニュースを、ホーム画面に置けます</h3>
-    <p class="m-body">iPhoneの方：Safariで開いて、下の共有ボタン（□に↑のマーク）から「ホーム画面に追加」。<br>
-    Androidの方：Chromeで開いて、右上のメニュー（︙）から「ホーム画面に追加」。<br>
-    パソコンの方：Chromeの右上のメニュー（︙）から「保存と共有」→「ショートカットを作成」で、デスクトップに置けます。ブックマーク（お気に入り）に入れておいても大丈夫です。<br>
-    番人のアイコンから、毎朝のニュースにすぐ来られますよ。</p>
+    <ol class="hn-steps">
+      <li><span class="hn-dev">iPhone</span>：Safariで開く → 下の共有ボタン（□に↑）→「ホーム画面に追加」</li>
+      <li><span class="hn-dev">Android</span>：Chromeで開く → 右上のメニュー（︙）→「ホーム画面に追加」</li>
+      <li><span class="hn-dev">パソコン</span>：Chromeのメニュー（︙）→「保存と共有」→「ショートカットを作成」</li>
+    </ol>
+    <p class="m-body">番人のアイコンから、毎朝のニュースにすぐ来られますよ。ブックマーク（お気に入り）に入れておいても大丈夫です。</p>
     <button class="howto-close-bottom" id="howtoCloseBottom" type="button">閉じる</button>
   </div>
 </div>
@@ -633,14 +647,18 @@
   var mLink = document.getElementById('mLink');
   var mSrc = document.getElementById('mSrc');
   var mLike = document.getElementById('mLike');
+  var mLikeTop = document.getElementById('mLikeTop');
   var curId = null;
 
   function paintLike(){
     if (!curId) return;
     var on = liked.indexOf(curId) >= 0;
-    mLike.classList.toggle('liked', on);
-    mLike.querySelector('.heart').textContent = on ? '♥' : '♡';
-    mLike.querySelector('.cnt').textContent = counts[curId] || 0;
+    [mLike, mLikeTop].forEach(function(btn){
+      if (!btn) return;
+      btn.classList.toggle('liked', on);
+      btn.querySelector('.heart').textContent = on ? '♥' : '♡';
+      btn.querySelector('.cnt').textContent = counts[curId] || 0;
+    });
   }
 
   // 「ほっとした」の共通処理（記事ポップアップと四コマポップアップで共有する）
@@ -718,6 +736,10 @@
   mLike.addEventListener('click', function(){
     if (!curId) return;
     if (window.HottoLikes.like(curId, mLike)) paintLike();
+  });
+  if (mLikeTop) mLikeTop.addEventListener('click', function(){
+    if (!curId) return;
+    if (window.HottoLikes.like(curId, mLikeTop)) paintLike();
   });
 
   var hlList = document.getElementById('headlineList');
@@ -804,6 +826,8 @@
       ul2.appendChild(li);
     });
     box.style.display = 'block';
+    var aLink = document.getElementById('archiveLink');
+    if (aLink) aLink.hidden = false;
   }
 })();
 </script>
