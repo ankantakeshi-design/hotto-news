@@ -73,11 +73,13 @@
   .headlines ul{list-style:none;}
   .headlines li{border-bottom:1px dashed var(--line);}
   .headlines li:last-child{border-bottom:none;}
-  .headlines a{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink);
-    font-size:14.5px;font-weight:700;line-height:1.55;padding:13px 2px;}
+  .headlines a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);
+    font-size:14.5px;font-weight:700;line-height:1.55;padding:13px 2px;min-height:48px;}
   .headlines a.read{color:#7a6f64;}
   .headlines a:active{opacity:.6;}
   .headlines .dot{flex:none;width:9px;height:9px;border-radius:50%;position:relative;top:-1px;}
+  .headlines .hl-thumb{flex:none;width:40px;height:auto;border-radius:50%;object-fit:cover;
+    background:#fff;border:2px solid var(--line);}
   .headlines .hl-area{flex:none;font-size:11px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:0 7px;}
   .headlines .hl-title{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;}
   .cat-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
@@ -91,7 +93,10 @@
   .modal .m-body{font-size:16px;color:#5d493f;line-height:1.9;}
   .modal-close{position:absolute;top:12px;right:14px;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:19px;color:var(--sub);cursor:pointer;line-height:1;}
   .m-more{margin-top:16px;font-size:14px;}
-  .m-more a{color:var(--accent2);font-weight:700;text-decoration:none;}
+  .m-more a{display:inline-flex;align-items:center;min-height:48px;color:var(--accent2);font-weight:700;text-decoration:none;}
+  .m-more--top{margin:2px 0 14px;}
+  .m-more--top a{padding:8px 20px;border:1.5px solid #2e6183;border-radius:999px;color:#2e6183;background:#fff;}
+  .m-more--top a:active{opacity:.7;}
   .m-like-wrap{margin-top:22px;padding-top:18px;border-top:1px dashed var(--line);text-align:center;}
   .m-like-wrap .like{margin-left:0;font-size:15px;padding:11px 22px;}
   .m-like-wrap--top{margin-top:2px;padding-top:0;border-top:none;text-align:left;}
@@ -569,6 +574,7 @@
     <button class="modal-close" id="modalClose" type="button" aria-label="閉じる">×</button>
     <span class="area" id="mArea"></span>
     <h3 id="mTitle"></h3>
+    <div class="m-more m-more--top"><a id="mLinkTop" target="_blank" rel="noopener noreferrer">元の記事を読む →</a> <span class="src" id="mSrcTop"></span></div>
     <div class="m-like-wrap m-like-wrap--top"><button class="like" id="mLikeTop" type="button"><span class="heart">♡</span>ほっとした<span class="cnt">0</span></button></div>
     <p class="m-body" id="mBody"></p>
     <div class="m-more"><a id="mLink" target="_blank" rel="noopener noreferrer">元の記事を読む →</a> <span class="src" id="mSrc"></span></div>
@@ -683,6 +689,15 @@
   renderMyCount(false);
   var counts = {};
   var catColors = ['#e8837a', '#5e9c63', '#e8a13a'];
+  // カテゴリ→番人イラストの対応（見出し一覧の小さな絵。毎日のdata.js差し替えでも描画側で維持される）
+  var catImgs = ['keeper-1.webp', 'keeper-2.webp', 'keeper-3.webp'];
+  function catImg(cat, ci){
+    var n = (cat && cat.name) || '';
+    if (n.indexOf('温まる') >= 0) return 'keeper-1.webp';
+    if (n.indexOf('希望') >= 0) return 'keeper-2.webp';
+    if (n.indexOf('笑える') >= 0) return 'keeper-3.webp';
+    return catImgs[ci % catImgs.length];
+  }
   var jnow = new Date();
   var jjst = new Date(jnow.getTime() + (9 * 60 + jnow.getTimezoneOffset()) * 60000);
   var jday = Math.floor(Date.UTC(jjst.getFullYear(), jjst.getMonth(), jjst.getDate()) / 86400000);
@@ -693,6 +708,8 @@
   var mBody = document.getElementById('mBody');
   var mLink = document.getElementById('mLink');
   var mSrc = document.getElementById('mSrc');
+  var mLinkTop = document.getElementById('mLinkTop');
+  var mSrcTop = document.getElementById('mSrcTop');
   var mLike = document.getElementById('mLike');
   var mLikeTop = document.getElementById('mLikeTop');
   var curId = null;
@@ -769,6 +786,8 @@
     mBody.textContent = it.body;
     mLink.href = it.url;
     mSrc.textContent = '（' + it.source + '）';
+    if (mLinkTop) mLinkTop.href = it.url;
+    if (mSrcTop) mSrcTop.textContent = '（' + it.source + '）';
     paintLike();
     modalBg.hidden = false;
     document.body.style.overflow = 'hidden';
@@ -845,16 +864,22 @@
       var a = document.createElement('a');
       a.href = '#';
       if (readIds.indexOf(id) >= 0) a.classList.add('read');
-      var dot = document.createElement('span');
-      dot.className = 'dot';
-      dot.style.background = catColors[ci % catColors.length];
+      var thumb = document.createElement('img');
+      thumb.className = 'hl-thumb';
+      thumb.src = catImg(cat, ci);
+      thumb.width = 40;
+      thumb.height = 40;
+      thumb.alt = '';
+      thumb.setAttribute('aria-hidden', 'true');
+      thumb.loading = 'lazy';
+      thumb.style.borderColor = catColors[ci % catColors.length];
       var t = document.createElement('span');
       t.className = 'hl-title';
       t.textContent = it.title;
       var ar = document.createElement('span');
       ar.className = 'hl-area';
       ar.textContent = it.area;
-      a.appendChild(dot); a.appendChild(t); a.appendChild(ar);
+      a.appendChild(thumb); a.appendChild(t); a.appendChild(ar);
       a.addEventListener('click', function(ev){ ev.preventDefault(); a.classList.add('read'); markRead(id); openModal(id, it); });
       li.appendChild(a);
       hlList.appendChild(li);
