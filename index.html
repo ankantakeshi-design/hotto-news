@@ -71,11 +71,11 @@
   .hl-head{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:6px;}
   .date-inline{font-size:13px;color:var(--sub);font-weight:700;text-align:center;overflow-wrap:anywhere;}
   .headlines ul{list-style:none;}
-  .headlines li{border-bottom:1px dashed var(--line);}
+  .headlines li{border-bottom:1px dashed var(--line);padding:3px 0;}
   .headlines li:last-child{border-bottom:none;}
   .headlines a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);
-    font-size:14.5px;font-weight:700;line-height:1.55;padding:13px 2px;min-height:48px;}
-  .headlines a.read{color:#7a6f64;}
+    font-size:14.5px;font-weight:700;line-height:1.55;padding:13px 10px;min-height:48px;border-radius:12px;}
+  .headlines a.read{color:#756857;}
   .headlines a:active{opacity:.6;}
   .headlines .dot{flex:none;width:9px;height:9px;border-radius:50%;position:relative;top:-1px;}
   .headlines .hl-thumb{flex:none;width:24px;height:auto;border-radius:50%;object-fit:cover;
@@ -698,6 +698,15 @@
     if (n.indexOf('笑える') >= 0) return 'keeper-3.webp';
     return catImgs[ci % catImgs.length];
   }
+  // カテゴリ→見出し行の薄い背景色（カテゴリ色の約10%の淡さ。種類がひと目で分かるように）
+  var catBgs = ['#fdf3f2', '#eff5ef', '#fdf6eb'];
+  function catBg(cat, ci){
+    var n = (cat && cat.name) || '';
+    if (n.indexOf('温まる') >= 0) return '#fdf3f2';
+    if (n.indexOf('希望') >= 0) return '#eff5ef';
+    if (n.indexOf('笑える') >= 0) return '#fdf6eb';
+    return catBgs[ci % catBgs.length];
+  }
   var jnow = new Date();
   var jjst = new Date(jnow.getTime() + (9 * 60 + jnow.getTimezoneOffset()) * 60000);
   var jday = Math.floor(Date.UTC(jjst.getFullYear(), jjst.getMonth(), jjst.getDate()) / 86400000);
@@ -864,6 +873,7 @@
       var a = document.createElement('a');
       a.href = '#';
       if (readIds.indexOf(id) >= 0) a.classList.add('read');
+      a.style.background = catBg(cat, ci);
       var thumb = document.createElement('img');
       thumb.className = 'hl-thumb';
       thumb.src = catImg(cat, ci);
