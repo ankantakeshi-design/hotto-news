@@ -235,6 +235,12 @@
   .hn-steps li{padding:3px 0;}
   .hn-steps .hn-dev{font-weight:800;color:var(--green-deep);}
   .modal .hn-steps{font-size:15px;color:#5d493f;}
+  .os-row{display:flex;gap:10px;align-items:flex-start;border-radius:14px;padding:10px 12px;margin:10px 0 0;text-align:left;}
+  .os-row p{margin:0;font-size:14.5px;line-height:1.7;color:var(--ink);}
+  .os-emoji{font-size:26px;line-height:1.2;flex:none;}
+  .os-ios{background:#e9f1fc;}
+  .os-android{background:#e9f6df;}
+  .os-pc{background:#f1eafa;}
   .home-note[hidden]{display:none;}
   .hn-done{display:block;margin:14px auto 2px;min-height:48px;padding:12px 30px;background:var(--green);color:#fff;border:none;border-radius:999px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;}
   .hn-done:active{opacity:.75;}
@@ -503,11 +509,9 @@
 
   <div class="home-note" id="homeNote">
     <div class="hn-title">ほっとニュースを、ホーム画面に置けます</div>
-    <ol class="hn-steps">
-      <li><span class="hn-dev">iPhone</span>：Safariで開く → 下の共有ボタン（□に↑）→「ホーム画面に追加」</li>
-      <li><span class="hn-dev">Android</span>：Chromeで開く → 右上のメニュー（︙）→「ホーム画面に追加」</li>
-      <li><span class="hn-dev">パソコン</span>：Chromeのメニュー（︙）→「保存と共有」→「ショートカットを作成」</li>
-    </ol>
+    <div class="os-row os-ios"><span class="os-emoji" aria-hidden="true">🍎</span><p><strong>iPhone</strong><br>Safariで開く → 下の共有ボタン（□に↑）→「ホーム画面に追加」</p></div>
+    <div class="os-row os-android"><span class="os-emoji" aria-hidden="true">🤖</span><p><strong>Android</strong><br>Chromeで開く → 右上のメニュー（︙）→「ホーム画面に追加」</p></div>
+    <div class="os-row os-pc"><span class="os-emoji" aria-hidden="true">💻</span><p><strong>パソコン</strong><br>Chromeのメニュー（︙）→「保存と共有」→「ショートカットを作成」</p></div>
     <p>番人のアイコンから、毎朝のニュースにすぐ来られますよ。ブックマーク（お気に入り）に入れておいても大丈夫です。</p>
     <button class="hn-done" id="homeDoneBtn" type="button">ホーム画面に置けました</button>
   </div>
@@ -577,11 +581,9 @@
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="howtoTitle">
     <button class="modal-close" id="howtoClose" type="button" aria-label="閉じる">×</button>
     <h3 id="howtoTitle">ほっとニュースを、ホーム画面に置けます</h3>
-    <ol class="hn-steps">
-      <li><span class="hn-dev">iPhone</span>：Safariで開く → 下の共有ボタン（□に↑）→「ホーム画面に追加」</li>
-      <li><span class="hn-dev">Android</span>：Chromeで開く → 右上のメニュー（︙）→「ホーム画面に追加」</li>
-      <li><span class="hn-dev">パソコン</span>：Chromeのメニュー（︙）→「保存と共有」→「ショートカットを作成」</li>
-    </ol>
+    <div class="os-row os-ios"><span class="os-emoji" aria-hidden="true">🍎</span><p><strong>iPhone</strong><br>Safariで開く → 下の共有ボタン（□に↑）→「ホーム画面に追加」</p></div>
+    <div class="os-row os-android"><span class="os-emoji" aria-hidden="true">🤖</span><p><strong>Android</strong><br>Chromeで開く → 右上のメニュー（︙）→「ホーム画面に追加」</p></div>
+    <div class="os-row os-pc"><span class="os-emoji" aria-hidden="true">💻</span><p><strong>パソコン</strong><br>Chromeのメニュー（︙）→「保存と共有」→「ショートカットを作成」</p></div>
     <p class="m-body">番人のアイコンから、毎朝のニュースにすぐ来られますよ。ブックマーク（お気に入り）に入れておいても大丈夫です。</p>
     <button class="howto-close-bottom" id="howtoCloseBottom" type="button">閉じる</button>
   </div>
