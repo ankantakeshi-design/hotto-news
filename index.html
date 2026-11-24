@@ -264,6 +264,12 @@
 .faq-item summary::after{content:"＋";position:absolute;right:6px;top:15px;font-size:13px;color:var(--sub);font-weight:400;}
 .faq-item[open ] summary::after{content:"−";}
 .faq-a{padding:2px 4px 18px;font-size:15px;line-height:1.9;color:var(--ink);}
+.faq-outer{border:2px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;}
+.faq-outer>summary{cursor:pointer;list-style:none;min-height:56px;display:flex;align-items:center;justify-content:center;padding:12px 16px;font-size:17px;font-weight:800;color:var(--ink);}
+.faq-outer>summary::-webkit-details-marker{display:none;}
+.faq-outer>summary::after{content:"▽";margin-left:10px;font-size:14px;color:var(--sub);}
+.faq-outer[open ]>summary::after{content:"△";}
+.faq-inner{padding:2px 14px 14px;}
 </style>
 <script type="application/ld+json">
 {
@@ -527,12 +533,16 @@
 
 
     <section class="faq-sec" aria-label="よくある質問">
-  <h2>よくある質問</h2>
+  <details class="faq-outer">
+  <summary>よくある質問</summary>
+  <div class="faq-inner">
   <details class="faq-item"><summary>森のほっとニュースは、どんなサイトですか？</summary><div class="faq-a">心が温まる、希望が持てる、くすっと笑える——今日の、いいニュースだけを集めたサイトです。「毎日の生活に、ご機嫌を。」がコンセプトで、心体調整塾のたけちゃんが選んでいます。重たいニュースに疲れた朝に、ほっとして一日を始められるように、という願いを込めています。</div></details>
   <details class="faq-item"><summary>ニュースは、いつ更新されますか？</summary><div class="faq-a">毎朝7時ごろ、その日のニュースに入れ替わります。前の日までのニュースは、下の「これまでのニュース」から、14日分まで読み返せますよ。</div></details>
   <details class="faq-item"><summary>「♡ほっとした」ボタンは、何ですか？</summary><div class="faq-a">読んでほっとしたら、押していただけるボタンです。1つの記事に、1回だけ押せます。押すと、ハートが舞います。数を比べたり競ったりする仕組みではなく、ただ「ほっとした」を置いていくためのボタンですよ。</div></details>
   <details class="faq-item"><summary>ニュースは、どこから選んでいますか？</summary><div class="faq-a">日本と世界のニュースから、日本の話題と世界の話題が半々くらいになるように選んでいます。見出しを押すと紹介文が読めて、「元の記事を読む」から配信元の記事へ進めます。ニュースの著作権は各配信元にあり、このサイトの紹介文は要約です。</div></details>
   <details class="faq-item"><summary>利用は無料ですか？</summary><div class="faq-a">無料です。登録もいりません。ホーム画面に追加しておくと、番人のアイコンから、毎朝のニュースにすぐ来られますよ。</div></details>
+  </div>
+  </details>
   </section>
 <footer>
     <p class="brand"><a href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">心体調整塾 たけちゃん</a></p>
