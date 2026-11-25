@@ -305,6 +305,9 @@
   .headlines{ background:#EFF6E3; border:2px solid #D8E8C3; border-radius:20px; padding:14px 12px 8px; }
   .sub-zone{ background:#FDF0DC; border:2px solid #F3D9AE; border-radius:20px; padding:12px 10px 6px; margin-top:14px; }
   .sub-zone > :first-child{ margin-top:0; }
+
+  /* バーのNEWバッジ（2026-11-25） */
+  .new-badge{ display:inline-block; vertical-align:middle; margin-left:8px; background:var(--green-deep); color:#fff; font-size:11px; font-weight:800; letter-spacing:.1em; border-radius:999px; padding:2px 9px; }
 </style>
 <script type="application/ld+json">
 {
@@ -438,7 +441,7 @@
 <!-- static-articles:end -->
 
   <div class="sub-zone">
-<details class="faq-outer yk-fold"><summary>火水四コマ</summary><div class="faq-inner"><section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-25">
+<details class="faq-outer yk-fold"><summary>火水四コマ<span class="new-badge" id="nb-yonko" style="display:none">NEW</span></summary><div class="faq-inner"><section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-25">
     <h2>火水四コマ<span class="yk-new" id="ykNew" hidden>NEW</span></h2>
     <p class="yk-hint">タップすると、大きく読めます</p>
     <p class="yk-ep"><span class="yk-ep-no">第5話</span>「こたつ」・2026年11月25日</p>
@@ -522,7 +525,7 @@
 
   
 
-  <details class="faq-outer omake-fold"><summary>おまけ</summary><div class="faq-inner"><section class="omake" id="omakeBox" hidden>
+  <details class="faq-outer omake-fold"><summary>おまけ<span class="new-badge" id="nb-omake" style="display:none">NEW</span></summary><div class="faq-inner"><section class="omake" id="omakeBox" hidden>
     <h2>おまけ</h2>
     <div class="om-card om-card--quote" id="omQuote" hidden>
       <div class="om-label">今日の一言</div>
@@ -1359,5 +1362,32 @@
 }
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5b8f1712fcb448f49826798c10dfd814"}'></script><!-- End Cloudflare Web Analytics -->
+
+<script>
+(function(){
+  var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo' }).format(new Date()).split('-');
+  var todayUtc = Date.UTC(+parts[0], +parts[1] - 1, +parts[2]);
+  var yb = document.getElementById('yonkomaBox');
+  var nb = document.getElementById('nb-yonko');
+  if (yb && nb) {
+    var dstr = yb.getAttribute('data-date');
+    if (dstr) {
+      var p = dstr.split('-');
+      if (p.length === 3) {
+        var pubUtc = Date.UTC(+p[0], +p[1] - 1, +p[2]);
+        var diffDays = Math.round((todayUtc - pubUtc) / 86400000);
+        if (diffDays >= -3 && diffDays <= 3) nb.style.display = '';
+      }
+    }
+  }
+  var ob = document.getElementById('omakeBox');
+  var no = document.getElementById('nb-omake');
+  if (ob && no) {
+    function sync(){ no.style.display = ob.hidden ? 'none' : ''; }
+    new MutationObserver(sync).observe(ob, { attributes: true, attributeFilter: ['hidden'] });
+    sync();
+  }
+})();
+</script>
 </body>
 </html>
