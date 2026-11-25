@@ -263,6 +263,16 @@
   .bar-item:active{opacity:.6;}
   .share-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:60;background:var(--green-deep);color:#fff;font-size:13px;font-weight:700;border-radius:999px;padding:8px 18px;box-shadow:0 4px 14px rgba(70,100,60,.25);white-space:nowrap;}
   .share-toast[hidden]{display:none;}
+
+  /* 見出し以外を包む＋おすすめの色分け（2026-11-25） */
+  .faq-inner .mori-link{ margin-top:10px; }
+  .faq-inner .mori-link:first-child{ margin-top:2px; }
+  .mori-link.t-mori{ background:#E8F3F8; border-color:#A9CCE0; }
+  .mori-link.t-omoro{ background:#FFF6D9; border-color:#EAD27A; }
+  .mori-link.t-inyo{ background:#FDEEE0; border-color:#F0BE8F; }
+  .mori-link.t-take{ background:#E9F1FA; border-color:#A9C3E4; }
+  .mori-link.t-stamp{ background:#EBF4E6; border-color:#A9CCA0; }
+  details.yk-fold{ margin-top:26px; }
 </style>
 <style>
 /* FAQ（よくある質問） */
@@ -413,7 +423,7 @@
 </noscript>
 <!-- static-articles:end -->
 
-  <section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-25">
+  <details class="faq-outer yk-fold"><summary>火水四コマ</summary><div class="faq-inner"><section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-25">
     <h2>火水四コマ<span class="yk-new" id="ykNew" hidden>NEW</span></h2>
     <p class="yk-hint">タップすると、大きく読めます</p>
     <p class="yk-ep"><span class="yk-ep-no">第5話</span>「こたつ」・2026年11月25日</p>
@@ -427,7 +437,7 @@
       <p class="yk-phrase">寒い日は、こたつでぬくぬく</p>
     </div>
     <p class="yk-ehon"><a href="https://kasuiehon.pages.dev/" target="_blank" rel="noopener noreferrer">絵本『ひーくんと みーちゃん』はこちら →</a></p>
-  </section>
+  </section></div></details>
 
   <div class="yk-archive" id="ykArchive" hidden>
     <button type="button" class="yk-archive-toggle" id="ykArchiveToggle" aria-expanded="false" aria-controls="ykArchiveBody">これまでの四コマ <span id="ykArchiveCount"></span></button>
@@ -512,19 +522,10 @@
     </div>
   </section>
 
-  <a class="mori-link mori-link-img" href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">
-    <img class="card-img" src="mori-card.jpg" alt="集まれ水女子の森の挿絵">
-    <span class="card-row">
-      <span>
-        <span class="t1">集まれ水女子の森｜新月・満月カレンダー</span><br>
-        <span class="t2">ニュースのあとは、森でひと休みどうぞ。</span>
-      </span>
-      <span class="arrow">→</span>
-    </span>
-  </a>
+  
 
 
-  <div class="home-note" id="homeNote">
+  <div class="home-note" id="homeNote" hidden>
     <div class="hn-title">ほっとニュースを、ホーム画面に置けます</div>
     <div class="os-row os-ios"><span class="os-emoji" aria-hidden="true">🍎</span><p><strong>iPhone</strong><br>Safariで開く → 下の共有ボタン（□に↑）→「ホーム画面に追加」</p></div>
     <div class="os-row os-android"><span class="os-emoji" aria-hidden="true">🤖</span><p><strong>Android</strong><br>Chromeで開く → 右上のメニュー（︙）→「ホーム画面に追加」</p></div>
@@ -535,34 +536,44 @@
   <script>try{ if (localStorage.getItem('hotto-homescreen-done') === '1') document.getElementById('homeNote').hidden = true; }catch(e){}</script>
   <div class="home-howto-link"><button id="homeHowtoOpen" type="button">ホーム画面への置き方を見る</button></div>
 
-  <a class="mori-link" href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer" style="margin-top:26px">
-    <img src="take-icon.png" alt="たけちゃんリンク" style="width:40px;height:40px;border-radius:10px;flex:none">
-    <span>
-      <span class="t1">たけちゃんリンク</span><br>
-      <span class="t2">心体調整塾の、すべての窓口はこちら。</span>
-    </span>
-    <span class="arrow">→</span>
-  </a>
+  
 
-  <a class="mori-link" href="https://store.line.me/stickershop/author/1408627/ja" target="_blank" rel="noopener noreferrer" style="margin-top:14px">
-    <img src="stamp-icon.png" alt="森の番人スタンプ" style="width:40px;height:40px;border-radius:10px;flex:none">
-    <span>
-      <span class="t1">LINEスタンプ</span>
-    </span>
-    <span class="arrow">→</span>
-  </a>
+  
 
-  <a class="mori-link" href="https://omoro-good.pages.dev/" target="_blank" rel="noopener noreferrer" style="margin-top:14px">
+  
+
+
+    <section class="faq-sec" aria-label="おすすめのサイト"><details class="faq-outer"><summary>おすすめのサイト</summary><div class="faq-inner"><a class="mori-link mori-link-img t-mori" href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">
+    <img class="card-img" src="mori-card.jpg" alt="集まれ水女子の森の挿絵">
+    <span class="card-row">
+      <span>
+        <span class="t1">集まれ水女子の森｜新月・満月カレンダー</span><br>
+        <span class="t2">ニュースのあとは、森でひと休みどうぞ。</span>
+      </span>
+      <span class="arrow">→</span>
+    </span>
+  </a><a class="mori-link t-omoro" href="https://omoro-good.pages.dev/" target="_blank" rel="noopener noreferrer">
     <img src="omoro-icon.jpg" alt="おもろグ〜" style="width:40px;height:40px;border-radius:10px;flex:none">
     <span>
       <span class="t1">おもろグ〜</span><br>
       <span class="t2">くすっと笑える投稿、あつめました。</span>
     </span>
     <span class="arrow">→</span>
-  </a>
-
-
-    <section class="faq-sec" aria-label="よくある質問">
+  </a><a class="mori-link t-inyo" href="https://inyo-megane.pages.dev/" target="_blank" rel="noopener noreferrer"><img src="quiz-keeper-glasses.webp" alt="陰陽メガネ" style="width:40px;height:40px;border-radius:10px;flex:none"><span><span class="t1">陰陽メガネ</span><br><span class="t2">陰陽の見方を、練習できます。</span></span><span class="arrow">→</span></a><a class="mori-link t-take" href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer">
+    <img src="take-icon.png" alt="たけちゃんリンク" style="width:40px;height:40px;border-radius:10px;flex:none">
+    <span>
+      <span class="t1">たけちゃんリンク</span><br>
+      <span class="t2">心体調整塾の、すべての窓口はこちら。</span>
+    </span>
+    <span class="arrow">→</span>
+  </a><a class="mori-link t-stamp" href="https://store.line.me/stickershop/author/1408627/ja" target="_blank" rel="noopener noreferrer">
+    <img src="stamp-icon.png" alt="森の番人スタンプ" style="width:40px;height:40px;border-radius:10px;flex:none">
+    <span>
+      <span class="t1">LINEスタンプ</span>
+    </span>
+    <span class="arrow">→</span>
+  </a></div></details></section>
+<section class="faq-sec" aria-label="よくある質問">
   <details class="faq-outer">
   <summary>よくある質問</summary>
   <div class="faq-inner">
