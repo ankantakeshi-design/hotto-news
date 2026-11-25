@@ -518,9 +518,11 @@
     </span>
   </a>
 
-  <div class="archive" id="archiveBox" style="display:none">
-    <h2>これまでのニュース</h2>
-    <ul id="archiveList"></ul>
+  <div class="yk-archive" id="archiveBox" hidden>
+    <button type="button" class="yk-archive-toggle" id="archiveToggle" aria-expanded="false" aria-controls="archiveBody">これまでのニュース（過去14日分）</button>
+    <div class="yk-archive-body" id="archiveBody" hidden>
+      <ul id="archiveList"></ul>
+    </div>
   </div>
 
   <div class="home-note" id="homeNote">
@@ -968,9 +970,19 @@
       li.textContent = day.dateLabel + '：' + day.titles.join('／');
       ul2.appendChild(li);
     });
-    box.style.display = 'block';
+    box.hidden = false;
+    var aToggle = document.getElementById('archiveToggle');
+    var aBody = document.getElementById('archiveBody');
+    function setArchive(open){
+      aBody.hidden = !open;
+      aToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    aToggle.addEventListener('click', function(){ setArchive(aBody.hidden); });
     var aLink = document.getElementById('archiveLink');
-    if (aLink) aLink.hidden = false;
+    if (aLink){
+      aLink.hidden = false;
+      aLink.addEventListener('click', function(){ setArchive(true); });
+    }
   }
 })();
 </script>
