@@ -273,6 +273,8 @@
   .mori-link.t-take{ background:#E9F1FA; border-color:#A9C3E4; }
   .mori-link.t-stamp{ background:#EBF4E6; border-color:#A9CCA0; }
   details.yk-fold{ margin-top:26px; }
+
+  details.omake-fold{ margin-top:26px; }
 </style>
 <style>
 /* FAQ（よくある質問） */
@@ -437,9 +439,8 @@
       <p class="yk-phrase">寒い日は、こたつでぬくぬく</p>
     </div>
     <p class="yk-ehon"><a href="https://kasuiehon.pages.dev/" target="_blank" rel="noopener noreferrer">絵本『ひーくんと みーちゃん』はこちら →</a></p>
-  </section></div></details>
-
-  <div class="yk-archive" id="ykArchive" hidden>
+  </section>
+<div class="yk-archive" id="ykArchive" hidden>
     <button type="button" class="yk-archive-toggle" id="ykArchiveToggle" aria-expanded="false" aria-controls="ykArchiveBody">これまでの四コマ <span id="ykArchiveCount"></span></button>
     <div class="yk-archive-body" id="ykArchiveBody" hidden>
       <div class="yk-num-grid" id="ykNumGrid" role="group" aria-label="話数で選ぶ"></div>
@@ -504,8 +505,11 @@
       </article>
     </div>
   </div>
+</div></details>
 
-  <section class="omake" id="omakeBox" hidden>
+  
+
+  <details class="faq-outer omake-fold"><summary>おまけ</summary><div class="faq-inner"><section class="omake" id="omakeBox" hidden>
     <h2>おまけ</h2>
     <div class="om-card om-card--quote" id="omQuote" hidden>
       <div class="om-label">今日の一言</div>
@@ -520,7 +524,7 @@
       <div class="om-label">今日は何の日</div>
       <ul class="om-list" id="omWhatDayList"></ul>
     </div>
-  </section>
+  </section></div></details>
 
   
 
