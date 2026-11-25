@@ -300,6 +300,11 @@
   details.omake-fold{ margin-top:10px; }
   .home-howto-link{ margin-top:10px; }
   footer{ margin-top:20px; }
+
+  /* 見出しと、それ以外の背景を分ける（おもろグ〜と同じスタイル・2026-11-25） */
+  .headlines{ background:#EFF6E3; border:2px solid #D8E8C3; border-radius:20px; padding:14px 12px 8px; }
+  .sub-zone{ background:#FDF0DC; border:2px solid #F3D9AE; border-radius:20px; padding:12px 10px 6px; margin-top:14px; }
+  .sub-zone > :first-child{ margin-top:0; }
 </style>
 <script type="application/ld+json">
 {
@@ -432,7 +437,8 @@
 </noscript>
 <!-- static-articles:end -->
 
-  <details class="faq-outer yk-fold"><summary>火水四コマ</summary><div class="faq-inner"><section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-25">
+  <div class="sub-zone">
+<details class="faq-outer yk-fold"><summary>火水四コマ</summary><div class="faq-inner"><section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-25">
     <h2>火水四コマ<span class="yk-new" id="ykNew" hidden>NEW</span></h2>
     <p class="yk-hint">タップすると、大きく読めます</p>
     <p class="yk-ep"><span class="yk-ep-no">第5話</span>「こたつ」・2026年11月25日</p>
@@ -596,6 +602,7 @@
   </div>
   </details>
   </section>
+</div>
 <footer>
     <p class="brand"><a href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">心体調整塾 たけちゃん</a></p>
     <p>このサイトは「<a href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">集まれ水女子の森</a>」とつながる、心体調整塾のコンテンツサイトです。<br>
