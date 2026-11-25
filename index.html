@@ -346,7 +346,12 @@
   <div class="headlines">
     <div class="hl-head"><span class="date-inline" id="dateLabel"></span></div>
     <ul id="headlineList"></ul>
-    <div class="archive-link" id="archiveLink" hidden><a href="#archiveBox">これまでのニュース（過去14日分）は、こちら ↓</a></div>
+  <div class="yk-archive" style="margin-top:14px" id="archiveBox" hidden>
+    <button type="button" class="yk-archive-toggle" id="archiveToggle" aria-expanded="false" aria-controls="archiveBody">これまでのニュース（過去14日分）</button>
+    <div class="yk-archive-body" id="archiveBody" hidden>
+      <ul id="archiveList"></ul>
+    </div>
+    </div>
   </div>
 
 <!-- static-articles:start -->
@@ -518,12 +523,6 @@
     </span>
   </a>
 
-  <div class="yk-archive" id="archiveBox" hidden>
-    <button type="button" class="yk-archive-toggle" id="archiveToggle" aria-expanded="false" aria-controls="archiveBody">これまでのニュース（過去14日分）</button>
-    <div class="yk-archive-body" id="archiveBody" hidden>
-      <ul id="archiveList"></ul>
-    </div>
-  </div>
 
   <div class="home-note" id="homeNote">
     <div class="hn-title">ほっとニュースを、ホーム画面に置けます</div>
@@ -978,11 +977,6 @@
       aToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
     aToggle.addEventListener('click', function(){ setArchive(aBody.hidden); });
-    var aLink = document.getElementById('archiveLink');
-    if (aLink){
-      aLink.hidden = false;
-      aLink.addEventListener('click', function(){ setArchive(true); });
-    }
   }
 })();
 </script>
