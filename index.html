@@ -1363,10 +1363,14 @@
 </script>
 <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "5b8f1712fcb448f49826798c10dfd814"}'></script><!-- End Cloudflare Web Analytics -->
 
+
 <script>
 (function(){
   var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo' }).format(new Date()).split('-');
+  var todayStr = parts.join('-');
   var todayUtc = Date.UTC(+parts[0], +parts[1] - 1, +parts[2]);
+  function getSeen(k){ try { return localStorage.getItem(k) || ''; } catch(e) { return ''; } }
+  function setSeen(k, v){ try { localStorage.setItem(k, v); } catch(e) {} }
   var yb = document.getElementById('yonkomaBox');
   var nb = document.getElementById('nb-yonko');
   if (yb && nb) {
@@ -1376,16 +1380,24 @@
       if (p.length === 3) {
         var pubUtc = Date.UTC(+p[0], +p[1] - 1, +p[2]);
         var diffDays = Math.round((todayUtc - pubUtc) / 86400000);
-        if (diffDays >= -3 && diffDays <= 3) nb.style.display = '';
+        if (diffDays >= -3 && diffDays <= 3 && getSeen('hotto-yonko-seen') !== dstr) nb.style.display = '';
+        var ykFold = nb.closest('details');
+        if (ykFold) ykFold.addEventListener('toggle', function(){
+          if (ykFold.open) { setSeen('hotto-yonko-seen', dstr); nb.style.display = 'none'; }
+        });
       }
     }
   }
   var ob = document.getElementById('omakeBox');
   var no = document.getElementById('nb-omake');
   if (ob && no) {
-    function sync(){ no.style.display = ob.hidden ? 'none' : ''; }
+    function sync(){ no.style.display = (!ob.hidden && getSeen('hotto-omake-seen') !== todayStr) ? '' : 'none'; }
     new MutationObserver(sync).observe(ob, { attributes: true, attributeFilter: ['hidden'] });
     sync();
+    var omFold = no.closest('details');
+    if (omFold) omFold.addEventListener('toggle', function(){
+      if (omFold.open) { setSeen('hotto-omake-seen', todayStr); no.style.display = 'none'; }
+    });
   }
 })();
 </script>
