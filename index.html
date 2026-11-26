@@ -319,6 +319,19 @@
 
   .yk-stamp-line{ text-align:center; margin:2px 0 8px; font-size:12.5px; }
   .yk-stamp-line a{ color:#7d8f7a; font-weight:400; text-decoration:none; }
+
+  /* BGMボタン（森と同仕様・2026-11-27） */
+  .bgm-btn {
+    position:fixed; left:16px; bottom:calc(72px + env(safe-area-inset-bottom)); z-index:50;
+    width:48px; height:48px; padding:0;
+    border:2px solid #9CC49F; background:rgba(255,255,255,.92); color:#33513c;
+    font-size:19px; font-weight:900; font-family:inherit;
+    border-radius:50%; cursor:pointer;
+    box-shadow:0 2px 10px rgba(51,81,60,.14);
+  }
+  .bgm-btn:active { transform:scale(.97); }
+  .bgm-btn.on { background:#5E9C63; border-color:#5E9C63; color:#fff; }
+  .bgm-credit { display:block; margin-top:6px; font-size:11px; color:#8a7a63; }
 </style>
 <script type="application/ld+json">
 {
@@ -610,7 +623,7 @@
   </section>
 </div>
 <footer>
-    <p class="brand"><a href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">心体調整塾 たけちゃん</a></p>
+    <p class="brand"><a href="https://takechanlink.pages.dev/" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">心体調整塾 たけちゃん</a><span class="bgm-credit">BGM: もっぴーさうんど</span></p>
     <p>このサイトは「<a href="https://mizujoshinomori.pages.dev/" target="_blank" rel="noopener noreferrer">集まれ水女子の森</a>」とつながる、心体調整塾のコンテンツサイトです。<br>
     ニュースの著作権は各配信元にあります。紹介文は要約です。</p>
   </footer>
@@ -1365,6 +1378,83 @@
       }
     }
   }
+})();
+</script>
+
+<button type="button" class="bgm-btn" id="bgm-btn" aria-pressed="false" aria-label="音楽をながす・とめる">♪</button>
+<audio id="bgm-player" loop preload="none" style="display:none"></audio>
+<script>
+(function(){
+  var player = document.getElementById('bgm-player');
+  var btn = document.getElementById('bgm-btn');
+  var wanted = true;   // 既定はON（森と同仕様）
+  var started = false;
+
+  function getBgmSrc(){
+    // 時間帯で3曲（朝＝木漏れ日／昼＝揺蕩う／夜＝まどろみの中、すべて もっぴーさうんど）
+    var hour = new Date().getHours();
+    if (hour >= 5 && hour < 12)       return 'bgm-morning.mp3';
+    else if (hour >= 12 && hour < 21) return 'bgm-day.mp3';
+    else                              return 'bgm-night.mp3';
+  }
+
+  function updateBtn(){
+    var on = wanted && started;
+    btn.setAttribute('aria-label', on ? '音楽をとめる' : '音楽をながす');
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+
+  function tryPlay(){
+    if (!wanted) return;
+    var src = getBgmSrc();
+    if (!player.src.endsWith(src)) player.src = src;
+    player.volume = 0.4;
+    player.play().catch(function(){});
+  }
+
+  player.addEventListener('playing', function(){
+    started = true;
+    updateBtn();
+    document.removeEventListener('pointerdown', onFirstTouch);
+    document.removeEventListener('touchstart', onFirstTouch);
+  });
+
+  function onFirstTouch(){ tryPlay(); }
+  document.addEventListener('pointerdown', onFirstTouch);
+  document.addEventListener('touchstart', onFirstTouch);
+
+  btn.addEventListener('click', function(){
+    if (wanted && !started) { tryPlay(); updateBtn(); return; }
+    wanted = !wanted;
+    if (wanted) { tryPlay(); } else { player.pause(); }
+    updateBtn();
+  });
+
+  var wasPlaying = false;
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) {
+      wasPlaying = wanted && !player.paused;
+      if (wasPlaying) player.pause();
+    } else if (wasPlaying && wanted) {
+      wasPlaying = false;
+      player.play().catch(function(){});
+    }
+  });
+  window.addEventListener('pagehide', function(){ if (!player.paused) player.pause(); });
+
+  setInterval(function(){
+    if (!wanted || player.paused) return;
+    var src = getBgmSrc();
+    if (!player.src.endsWith(src)) {
+      player.src = src;
+      player.volume = 0.4;
+      player.play().catch(function(){});
+    }
+  }, 60000);
+
+  updateBtn();
+  tryPlay();
 })();
 </script>
 </body>
