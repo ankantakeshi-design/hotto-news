@@ -305,6 +305,8 @@
   .headlines{ background:#EFF6E3; border:2px solid #D8E8C3; border-radius:20px; padding:14px 12px 8px; }
   .sub-zone{ background:#FDF0DC; border:2px solid #F3D9AE; border-radius:20px; padding:12px 10px 6px; margin-top:14px; }
   .sub-zone > :first-child{ margin-top:0; }
+  .yk-zone{ background:#EAF3FA; border:2px solid #BCD9EE; border-radius:20px; padding:12px 10px 6px; margin-top:14px; }
+  .yk-zone > :first-child{ margin-top:0; }
 
   /* バーのNEWバッジ（2026-11-25） */
   .new-badge{ display:inline-block; vertical-align:middle; margin-right:8px; background:var(--green-deep); color:#fff; font-size:11px; font-weight:800; letter-spacing:.1em; border-radius:999px; padding:2px 9px; }
@@ -443,7 +445,7 @@
 </noscript>
 <!-- static-articles:end -->
 
-  <div class="sub-zone">
+  <div class="yk-zone">
 <details class="faq-outer yk-fold"><summary><span class="new-badge" id="nb-yonko" style="display:none">NEW</span><img class="bar-thumb" src="yonko-bar.webp" alt="">四コマ（ひーくんとみーちゃん）</summary><div class="faq-inner"><section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-26">
     <h2>火水四コマ<span class="yk-new" id="ykNew" hidden>NEW</span></h2>
     <p class="yk-hint">タップすると、大きく読めます</p>
@@ -548,23 +550,9 @@
     </div>
   </div>
 </div></details>
+  </div>
 
-  <details class="faq-outer omake-fold"><summary><span class="new-badge" id="nb-omake" style="display:none">NEW</span><img class="bar-thumb" src="keeper-1.webp" alt="">名言・誕生日・記念日</summary><div class="faq-inner"><section class="omake" id="omakeBox" hidden>
-    <h2>名言・誕生日・記念日</h2>
-    <div class="om-card om-card--quote" id="omQuote" hidden>
-      <div class="om-label">今日の一言</div>
-      <p class="om-quote" id="omQuoteText"></p>
-      <p class="om-person" id="omQuotePerson"></p>
-    </div>
-    <div class="om-card om-card--birthday" id="omBirthdays" hidden>
-      <div class="om-label" id="omBirthdayLabel">今日が誕生日の偉人</div>
-      <ul class="om-list" id="omBirthdayList"></ul>
-    </div>
-    <div class="om-card om-card--whatday" id="omWhatDay" hidden>
-      <div class="om-label">今日は何の日</div>
-      <ul class="om-list" id="omWhatDayList"></ul>
-    </div>
-  </section></div></details>
+  <div class="sub-zone">
 
   
 
@@ -973,41 +961,6 @@
     notifyLikes();
   }).catch(function(){});
 
-  if (D.omake){
-    var om = D.omake, shown = false;
-    if (om.quote && om.quote.text){
-      document.getElementById('omQuoteText').textContent = '「' + om.quote.text + '」';
-      document.getElementById('omQuotePerson').textContent = om.quote.person || '';
-      document.getElementById('omQuote').hidden = false; shown = true;
-    }
-    if (om.birthdays && om.birthdays.length){
-      var dp = (D.dateISO || '').split('-');
-      if (dp.length === 3) document.getElementById('omBirthdayLabel').textContent = '今日が誕生日の偉人（' + Number(dp[1]) + '月' + Number(dp[2]) + '日）';
-      var bl = document.getElementById('omBirthdayList');
-      om.birthdays.forEach(function(p){
-        var li = document.createElement('li');
-        var n = document.createElement('span'); n.className = 'om-name'; n.textContent = p.name;
-        li.appendChild(n);
-        if (p.years){ var y = document.createElement('span'); y.className = 'om-years'; y.textContent = p.years; li.appendChild(y); }
-        if (p.note){ var nt = document.createElement('span'); nt.className = 'om-note'; nt.textContent = p.note; li.appendChild(nt); }
-        bl.appendChild(li);
-      });
-      document.getElementById('omBirthdays').hidden = false; shown = true;
-    }
-    if (om.whatDay && om.whatDay.length){
-      var wl = document.getElementById('omWhatDayList');
-      om.whatDay.forEach(function(w){
-        var li = document.createElement('li');
-        var n = document.createElement('span'); n.className = 'om-name'; n.textContent = w.title;
-        li.appendChild(n);
-        if (w.note){ var nt = document.createElement('span'); nt.className = 'om-note'; nt.textContent = w.note; li.appendChild(nt); }
-        wl.appendChild(li);
-      });
-      document.getElementById('omWhatDay').hidden = false; shown = true;
-    }
-    if (shown) document.getElementById('omakeBox').hidden = false;
-  }
-
   if (D.archive && D.archive.length){
     var box = document.getElementById('archiveBox');
     var ul2 = document.getElementById('archiveList');
@@ -1411,17 +1364,6 @@
         });
       }
     }
-  }
-  var ob = document.getElementById('omakeBox');
-  var no = document.getElementById('nb-omake');
-  if (ob && no) {
-    function sync(){ no.style.display = (!ob.hidden && getSeen('hotto-omake-seen') !== todayStr) ? '' : 'none'; }
-    new MutationObserver(sync).observe(ob, { attributes: true, attributeFilter: ['hidden'] });
-    sync();
-    var omFold = no.closest('details');
-    if (omFold) omFold.addEventListener('toggle', function(){
-      if (omFold.open) { setSeen('hotto-omake-seen', todayStr); no.style.display = 'none'; }
-    });
   }
 })();
 </script>
