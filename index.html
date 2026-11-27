@@ -183,6 +183,8 @@
   .yk-nav-btn:disabled{opacity:.35;cursor:default;}
   .yk-nav-no{font-size:14px;font-weight:800;color:var(--green-deep);white-space:nowrap;}
   .yk-nav-bottom{margin-top:16px;}
+  .yk-view-nav{margin-top:14px;}
+  .yk-view-nav[hidden]{display:none;}
   .mori-link-img{flex-direction:column;align-items:stretch;padding:0;overflow:hidden;gap:0;}
   .mori-link-img .card-img{width:100%;height:170px;object-fit:cover;display:block;}
   .mori-link-img .card-row{display:flex;align-items:center;gap:12px;padding:14px 18px;}
@@ -459,7 +461,7 @@
 <!-- static-articles:end -->
 
   <div class="yk-zone">
-<details class="faq-outer yk-fold"><summary><span class="new-badge" id="nb-yonko" style="display:none">NEW</span><img class="bar-thumb" src="yonko-bar.webp" alt="">四コマ（ひーくんとみーちゃん）</summary><div class="faq-inner"><section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-27">
+<section class="yonkoma" id="yonkomaBox" aria-label="火水四コマ" data-date="2026-11-27">
     <h2>火水四コマ<span class="yk-new" id="ykNew" hidden>NEW</span></h2>
     <p class="yk-hint">タップすると、大きく読めます</p>
     <p class="yk-ep"><span class="yk-ep-no">第8話</span>「雪だるま」・2026年11月27日</p>
@@ -471,6 +473,11 @@
     </div>
     <div class="yk-close">
       <p class="yk-phrase">雪の日は、二人で雪だるま</p>
+    </div>
+    <div class="yk-nav yk-view-nav" id="ykViewNav" hidden>
+      <button type="button" class="yk-nav-btn" data-yk-view="prev">← 前の話</button>
+      <span class="yk-nav-no" id="ykViewNo"></span>
+      <button type="button" class="yk-nav-btn" data-yk-view="next">次の話 →</button>
     </div>
     <p class="yk-ehon"><a href="https://kasuiehon.pages.dev/" target="_blank" rel="noopener noreferrer">絵本『ひーくんと みーちゃん』はこちら →</a></p>
     <p class="yk-stamp-line"><a href="https://store.line.me/stickershop/author/1408627/ja" target="_blank" rel="noopener noreferrer">ひーくんとみーちゃんの、LINEスタンプもあります →</a></p>
@@ -573,7 +580,6 @@
       </article>
     </div>
   </div>
-</div></details>
   </div>
 
   <div class="sub-zone">
@@ -1092,6 +1098,7 @@
         var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         var diffDays = Math.round((today - pub) / 86400000);
         if (diffDays >= -3 && diffDays <= 3) ykNew.hidden = false;
+  var ykFresh = !ykNew.hidden;
       }
     }
   }
@@ -1186,6 +1193,46 @@
   })();
   var latestEpIdx = 0;
   for (var li = 0; li < episodes.length; li++) { if (episodes[li].latest) latestEpIdx = li; }
+  // コーナー表示の話切り替え（右左ボタンで、その場で前の話・次の話へ）
+  var viewIdx = latestEpIdx;
+  var viewNav = document.getElementById('ykViewNav');
+  var viewNo = document.getElementById('ykViewNo');
+  var epLineEl = ykBox ? ykBox.querySelector('.yk-ep') : null;
+  var phraseEl = ykBox ? ykBox.querySelector('.yk-phrase') : null;
+  function renderView(){
+    var ep = episodes[viewIdx];
+    if (!ep) return;
+    if (epLineEl) epLineEl.innerHTML = '<span class="yk-ep-no">第' + ep.no + '話</span>「' + ep.title + '」・' + ep.date;
+    for (var j = 0; j < panels.length; j++) {
+      if (ep.set[j]) { panels[j].src = ep.set[j].src; panels[j].alt = ep.set[j].alt; }
+    }
+    if (phraseEl) phraseEl.textContent = ep.phrase || '';
+    if (ykNew) ykNew.hidden = !(ep.latest && ykFresh);
+    if (viewNav) {
+      viewNav.hidden = episodes.length < 2;
+      if (viewNo) viewNo.textContent = '第' + ep.no + '話';
+      var vb = viewNav.querySelectorAll('[data-yk-view]');
+      for (var b = 0; b < vb.length; b++) {
+        if (vb[b].getAttribute('data-yk-view') === 'prev') vb[b].disabled = (viewIdx <= 0);
+        else vb[b].disabled = (viewIdx >= episodes.length - 1);
+      }
+    }
+  }
+  if (viewNav) {
+    var vBtns = viewNav.querySelectorAll('[data-yk-view]');
+    for (var vi = 0; vi < vBtns.length; vi++) {
+      (function(btn){
+        btn.addEventListener('click', function(){
+          var n = viewIdx + (btn.getAttribute('data-yk-view') === 'prev' ? -1 : 1);
+          if (n < 0 || n >= episodes.length) return;
+          viewIdx = n;
+          renderView();
+          if (ykBox) ykBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      })(vBtns[vi]);
+    }
+  }
+  renderView();
   var curEp = -1;
   var numBtns = [];
   function renderNav(){
@@ -1228,15 +1275,7 @@
       document.body.style.overflow = 'hidden';
       try { history.pushState({hottoYonkoma:true}, ''); pushed = true; } catch(e){}
     }
-    var imgs = modal.querySelectorAll('.yk-modal-stack img');
-    var target = imgs[panelIdx || 0];
-    if (target) {
-      requestAnimationFrame(function(){
-        modal.scrollTop = Math.max(0, target.offsetTop - 64);
-      });
-    } else {
-      modal.scrollTop = 0;
-    }
+    modal.scrollTop = 0;
   }
   function stepEp(delta){
     if (curEp < 0) return;
@@ -1264,9 +1303,9 @@
   }
   for (var i = 0; i < panels.length; i++) {
     (function(idx){
-      panels[idx].addEventListener('click', function(){ openEpisode(latestEpIdx, idx); });
+      panels[idx].addEventListener('click', function(){ openEpisode(viewIdx, idx); });
       panels[idx].addEventListener('keydown', function(ev){
-        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openEpisode(latestEpIdx, idx); }
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openEpisode(viewIdx, idx); }
       });
     })(i);
   }
@@ -1372,23 +1411,6 @@
   var todayUtc = Date.UTC(+parts[0], +parts[1] - 1, +parts[2]);
   function getSeen(k){ try { return localStorage.getItem(k) || ''; } catch(e) { return ''; } }
   function setSeen(k, v){ try { localStorage.setItem(k, v); } catch(e) {} }
-  var yb = document.getElementById('yonkomaBox');
-  var nb = document.getElementById('nb-yonko');
-  if (yb && nb) {
-    var dstr = yb.getAttribute('data-date');
-    if (dstr) {
-      var p = dstr.split('-');
-      if (p.length === 3) {
-        var pubUtc = Date.UTC(+p[0], +p[1] - 1, +p[2]);
-        var diffDays = Math.round((todayUtc - pubUtc) / 86400000);
-        if (diffDays >= -3 && diffDays <= 3 && getSeen('hotto-yonko-seen') !== dstr) nb.style.display = '';
-        var ykFold = nb.closest('details');
-        if (ykFold) ykFold.addEventListener('toggle', function(){
-          if (ykFold.open) { setSeen('hotto-yonko-seen', dstr); nb.style.display = 'none'; }
-        });
-      }
-    }
-  }
 })();
 </script>
 
