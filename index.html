@@ -1013,7 +1013,7 @@
 <script>
 (function(){
   var topBtn = document.getElementById('barTop');
-  if (topBtn) topBtn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+  if (topBtn) topBtn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'auto'}); });
   var shareBtn = document.getElementById('barShare');
   var toast = document.getElementById('shareToast');
   var toastTimer = null;
@@ -1227,7 +1227,7 @@
           if (n < 0 || n >= episodes.length) return;
           viewIdx = n;
           renderView();
-          if (ykBox) ykBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (ykBox) ykBox.scrollIntoView({ behavior: 'auto', block: 'start' });
         });
       })(vBtns[vi]);
     }
